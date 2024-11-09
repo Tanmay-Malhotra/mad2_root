@@ -8,7 +8,8 @@ db = SQLAlchemy()
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(100), nullable=False)
+    # name meine add kiya hai 
+    # name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String, unique = True, nullable = False)
     password = db.Column(db.String, nullable = False)
     # flask-security specific
@@ -26,56 +27,79 @@ class UserRoles(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 
-datastore = SQLAlchemyUserDatastore(db, User, Role)
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
-class Campaign(db.Model):
+class sponsor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    budget = db.Column(db.Float, nullable=False)
-    requirements = db.Column(db.Text)
-    status = db.Column(db.String(20), default='active')  # active, completed, cancelled
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    deadline = db.Column(db.DateTime)
-    sponsor_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    
-    # Relationships
-    sponsor = db.relationship('User', backref='campaigns')
-    requests = db.relationship('CampaignRequest', backref='campaign')
-
-class InfluencerProfile(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    bio = db.Column(db.Text)
-    followers_count = db.Column(db.Integer)
-    engagement_rate = db.Column(db.Float)
-    niche = db.Column(db.String(100))
-    social_media_links = db.Column(db.JSON)
-    pricing = db.Column(db.JSON)  # Store different pricing tiers
-    
-    # Relationship
-    user = db.relationship('User', backref='influencer_profile', uselist=False)
-
-class SponsorProfile(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    company_name = db.Column(db.String(200), nullable=False)
-    company_description = db.Column(db.Text)
-    website = db.Column(db.String(200))
+    name = db.Column(db.String(100), nullable=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
     industry = db.Column(db.String(100))
-    approval_status = db.Column(db.String(50), default="Pending")
-    
-    # Relationship
-    user = db.relationship('User', backref='sponsor_profile', uselist=False)
+    flagged = db.Column(db.String(10), nullable=False, default="no")  
+    campaigns = db.relationship('campaign', backref='sponsor', lazy=True)
 
-class CampaignRequest(db.Model):
+class campaign(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    status = db.Column(db.String(50), nullable=False,default="active")
+    category = db.Column(db.String(50), nullable=False)  
+    budget = db.Column(db.Integer, nullable=False)
+    sponsor_id = db.Column(db.Integer, db.ForeignKey('sponsor.id'), nullable=False)
+    flagged = db.Column(db.String(10), nullable=False, default="no")
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=True)
+    
+    ad_requests = db.relationship('adrequest', backref='campaign', lazy=True)
+
+class influencer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    industry = db.Column(db.String(100),nullable = False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    platform = db.Column(db.String(100))
+    flagged = db.Column(db.String(10), nullable=False, default="no")
+    followers = db.Column(db.Integer, nullable=False)
+    ad_requests = db.relationship('adrequest', backref='influencer', lazy=True)
+
+class adrequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=False)
-    influencer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    status = db.Column(db.String(20), default='pending')  # pending, accepted, rejected
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    response_at = db.Column(db.DateTime)
-    proposed_terms = db.Column(db.Text)
-    
-    # Relationships
-    influencer = db.relationship('User', backref='campaign_requests')
+    influencer_id = db.Column(db.Integer, db.ForeignKey('influencer.id'), nullable=False)
+    requirements = db.Column(db.String(500), nullable=False)
+    flagged = db.Column(db.String(10), nullable=False, default="no")
+    payment_amount = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(50), nullable=False, default='Request Sent')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

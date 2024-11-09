@@ -1,6 +1,7 @@
-from flask import current_app as app
+""" from flask import current_app as app
 from backend.models import db
 from flask_security import SQLAlchemyUserDatastore, hash_password
+from backend.models import user_datastore
 
 with app.app_context():
     db.create_all()
@@ -15,4 +16,4 @@ with app.app_context():
     if (not userdatastore.find_user(email = 'user01@spoc.in')):
         userdatastore.create_user(name = 'user01', email = 'user01@spoc.in', password = hash_password('pass'), roles = ['user'] ) # for testing
 
-    db.session.commit()
+    db.session.commit() """

@@ -1,10 +1,10 @@
 from flask_restful import Resource
 from flask import jsonify, make_response, request
 from flask_security import login_user, verify_password
-from backend.models import db, datastore
+from backend.models import db, user_datastore
 
 #API for login and signup 
-user_datastore = datastore
+
 
 class Signin(Resource):
     #User datastore is not accessed ????
