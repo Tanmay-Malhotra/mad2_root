@@ -37,6 +37,9 @@ class SponsorProfile(db.Model):
     name = db.Column(db.String(100), nullable=True)
     industry = db.Column(db.String(100))
     flagged = db.Column(db.String(10), nullable=False, default="no")
+    #Need to add a column for admin approval 
+    
+
 
     # Relationship with campaigns
     campaigns = db.relationship('Campaign', backref='sponsor_profile', lazy=True)
