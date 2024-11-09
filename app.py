@@ -1,50 +1,45 @@
-from flask import request
-from flask import Flask
-
-""" from backend.config import LocalDevelopmentConfig
-from backend.models import db, User, Role, datastore
+from flask import Flask, jsonify
 from flask_security import Security, SQLAlchemyUserDatastore, auth_required
+from flask_restful import Api
+from flask_cors import CORS
+from backend.models import db, User, Role  # Ensure these imports are correct
 from backend.routes.auth import Signin, InfluencerSignup, SponsorSignup
-from flask_restful import Api """
-
-
-
 
 def createApp():
     app = Flask(__name__)
+    
+    # Load configuration
     from backend.config import LocalDevelopmentConfig
     app.config.from_object(LocalDevelopmentConfig)
-
-    from backend.models import db, user_datastore
-
+    
+    # Initialize database
     db.init_app(app)
-
-    from flask_security import Security
+    
+    # Set up Flask-Security with SQLAlchemyUserDatastore
+    user_datastore = SQLAlchemyUserDatastore(db, User, Role)
     security = Security(app, user_datastore)
 
-    from flask_restful import Api
+    # Initialize API and CORS
     api = Api(app)
-
-    from flask_cors import CORS
     CORS(app)
 
     return app, api
 
+# Create the app and API handler
 app, api_handler = createApp()
-from flask_security import auth_required
-@app.get('/protected')
-@auth_required()
-def protected():
-    return '<h1> only accessible by auth user</h1>'
 
+# Example of a protected route using Flask-Security
+@app.get('/protected')
+@auth_required()  # Requires authenticated user
+def protected():
+    return '<h1>Only accessible by authenticated user</h1>'
 
 #----------------API Routes-----------------------------------------------------
 
-from backend.routes.auth import Signin, InfluencerSignup, SponsorSignup
+# Add resources for API routes
 api_handler.add_resource(Signin, "/signin")
-api_handler.add_resource(InfluencerSignup, "/signup")
-api_handler.add_resource(SponsorSignup, "/sponsor/signup")
+api_handler.add_resource(InfluencerSignup, "/signup/influencer")  # Separate endpoint for influencers
+api_handler.add_resource(SponsorSignup, "/signup/sponsor")       # Separate endpoint for sponsors
 
-
-if (__name__ == '__main__'):
+if __name__ == '__main__':
     app.run()
