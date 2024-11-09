@@ -11,8 +11,8 @@ with app.app_context():
     userdatastore.find_or_create_role(name = 'user', description = 'general user')
 
     if (not userdatastore.find_user(email = 'admin@spoc.in')):
-        userdatastore.create_user(email = 'admin@spoc.in', password = hash_password('pass'), roles = ['admin'] )
+        userdatastore.create_user(name = 'admin', email = 'admin@spoc.in', password = hash_password('pass'), roles = ['admin'] )
     if (not userdatastore.find_user(email = 'user01@spoc.in')):
-        userdatastore.create_user(email = 'user01@spoc.in', password = hash_password('pass'), roles = ['user'] ) # for testing
+        userdatastore.create_user(name = 'user01', email = 'user01@spoc.in', password = hash_password('pass'), roles = ['user'] ) # for testing
 
     db.session.commit()
