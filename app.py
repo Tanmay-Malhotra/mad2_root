@@ -5,6 +5,7 @@ from flask_cors import CORS
 from backend.models import db, User, Role  # Ensure these imports are correct
 from backend.routes.auth import Signin, InfluencerSignup, SponsorSignup
 
+
 def createApp():
     app = Flask(__name__)
     
@@ -17,7 +18,7 @@ def createApp():
     
     # Set up Flask-Security with SQLAlchemyUserDatastore
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-    security = Security(app, user_datastore)
+    security = Security(app, user_datastore, register_blueprint=False)
 
     # Initialize API and CORS
     api = Api(app)
@@ -40,6 +41,22 @@ def protected():
 api_handler.add_resource(Signin, "/signin")
 api_handler.add_resource(InfluencerSignup, "/signup/influencer")  # Separate endpoint for influencers
 api_handler.add_resource(SponsorSignup, "/signup/sponsor")       # Separate endpoint for sponsors
+
+
+
+
+
+# API for campaign management for sponsor
+from backend.routes.campaigns import Campaigns,CreateCampaign
+
+api_handler.add_resource(Campaigns,"/campaigns")
+api_handler.add_resource(CreateCampaign, "/sponsor/create_camp")
+
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run()

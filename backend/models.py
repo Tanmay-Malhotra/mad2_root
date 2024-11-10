@@ -38,7 +38,7 @@ class SponsorProfile(db.Model):
     industry = db.Column(db.String(100))
     flagged = db.Column(db.String(10), nullable=False, default="no")
     #Need to add a column for admin approval 
-    
+
 
 
     # Relationship with campaigns
@@ -66,6 +66,7 @@ class Campaign(db.Model):
     flagged = db.Column(db.String(10), nullable=False, default="no")
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=True)
+    # add public/private campaign and respective functionality
 
     # Relationship with ad requests
     ad_requests = db.relationship('AdRequest', backref='campaign', lazy=True)
