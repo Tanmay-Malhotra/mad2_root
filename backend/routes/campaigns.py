@@ -4,7 +4,7 @@ from flask_restful import Resource
 from flask_security import auth_token_required, current_user
 from datetime import date
 
-from backend.models import db, Campaign,SponsorProfile
+from backend.models import db, Campaign,SponsorProfile,User
 
 class Campaigns(Resource):
     @auth_token_required  # Require a valid authentication token
@@ -80,7 +80,7 @@ class CreateCampaign(Resource):
             name=name,
             category=category,
             budget=int(budget),
-            sponsor_profile_id=sponsor_profile_id,
+            sponsor_profile_id=sponsor_profile.id,
             start_date=start_date,
             end_date=end_date
         )
