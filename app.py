@@ -61,7 +61,16 @@ api_handler.add_resource(UpdateAdRequest, '/campaign/update_ad_request/<int:ad_r
 api_handler.add_resource(DeleteAdRequest, '/campaign/delete_ad_request/<int:ad_request_id>')
 
 
+#API for sponsor to find influncers 
+from backend.routes.sponsor import FindInfluencers
+api_handler.add_resource(FindInfluencers, '/sponsor/inf_find')
 
+
+#API for influencer to manage add request 
+from backend.routes.influencer import AcceptAdRequest,RejectAdRequest
+
+api_handler.add_resource(AcceptAdRequest, '/accept_ad_request/<int:ad_request_id>')
+api_handler.add_resource(RejectAdRequest, '/reject_ad_request/<int:ad_request_id>')
 
 
 
