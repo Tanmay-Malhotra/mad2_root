@@ -179,5 +179,49 @@ class DeleteCampaign(Resource):
         return make_response(jsonify({"message": "Campaign deleted successfully!"}), 200)
 
 
+#-------------------------------------AD Request for sponsors----------------------------------------------------------
+
+from flask import request, jsonify, make_response
+from flask_restful import Resource
+from flask_security import auth_token_required
+from backend.models import db, AdRequest, Campaign, InfluencerProfile
+
+class CreateAdRequest(Resource):
+    @auth_token_required
+    def post(self, influencer_id):
+        data = request.get_json()
+        campaign_id = data.get('campaign_id')
+        requirements = data.get('requirements')
+        payment_amount = data.get('payment_amount')
+        
+        # Check if all required fields are provided
+        if not campaign_id or not requirements or not payment_amount:
+            return make_response(jsonify({"error": "Missing required fields"}), 400)
+        
+        # Verify if the influencer exists
+        influencer = InfluencerProfile.query.get(influencer_id)
+        if not influencer:
+            return make_response(jsonify({"error": "Influencer not found"}), 404)
+
+        # Verify if the campaign exists and belongs to the sponsor
+        campaign = Campaign.query.get(campaign_id)
+        if not campaign or campaign.sponsor_profile.user_id != current_user.id:
+            return make_response(jsonify({"error": "Campaign not found or not authorized"}), 403)
+
+        # Create the ad request
+        new_ad_request = AdRequest(
+            campaign_id=campaign_id,
+            influencer_profile_id=influencer_id,
+            requirements=requirements,
+            payment_amount=float(payment_amount),
+            status='Request Sent'
+        )
+        
+        db.session.add(new_ad_request)
+        db.session.commit()
+
+        return make_response(jsonify({"message": "Ad request sent successfully!"}), 201)
+
+
 
 

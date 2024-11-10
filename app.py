@@ -52,6 +52,11 @@ api_handler.add_resource(CreateCampaign, "/sponsor/create_camp")
 api_handler.add_resource(EditCampaign, '/edit_campaign/<int:campaign_id>')
 api_handler.add_resource(DeleteCampaign, '/delete_campaign/<int:campaign_id>')
 
+# API for adrequest management for sponsor 
+from backend.routes.campaigns import CreateAdRequest
+
+api_handler.add_resource(CreateAdRequest, '/sponsor/ad_request/<int:influencer_id>')
+
 
 
 
