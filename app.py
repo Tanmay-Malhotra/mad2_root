@@ -44,13 +44,15 @@ api_handler.add_resource(SponsorSignup, "/signup/sponsor")       # Separate endp
 
 
 
-
-
 # API for campaign management for sponsor
-from backend.routes.campaigns import Campaigns,CreateCampaign
+from backend.routes.campaigns import Campaigns,CreateCampaign,EditCampaign,DeleteCampaign
 
-api_handler.add_resource(Campaigns,"/campaigns")
+api_handler.add_resource(Campaigns, "/campaigns/<int:sponsor_id>")
 api_handler.add_resource(CreateCampaign, "/sponsor/create_camp")
+api_handler.add_resource(EditCampaign, '/edit_campaign/<int:campaign_id>')
+api_handler.add_resource(DeleteCampaign, '/delete_campaign/<int:campaign_id>')
+
+
 
 
 
