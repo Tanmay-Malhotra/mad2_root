@@ -53,12 +53,12 @@ api_handler.add_resource(EditCampaign, '/edit_campaign/<int:campaign_id>')
 api_handler.add_resource(DeleteCampaign, '/delete_campaign/<int:campaign_id>')
 
 # API for adrequest management for sponsor 
-from backend.routes.campaigns import CreateAdRequest
+from backend.routes.campaigns import CreateAdRequest,ViewAdRequests,UpdateAdRequest,DeleteAdRequest
 
-api_handler.add_resource(CreateAdRequest, '/sponsor/ad_request/<int:influencer_id>')
-
-
-
+api_handler.add_resource(CreateAdRequest, '/sponsor/campaign/ad_request/<int:influencer_id>')
+api_handler.add_resource(ViewAdRequests, '/sponsor/campaign/<int:campaign_id>/ad_requests')
+api_handler.add_resource(UpdateAdRequest, '/campaign/update_ad_request/<int:ad_request_id>')
+api_handler.add_resource(DeleteAdRequest, '/campaign/delete_ad_request/<int:ad_request_id>')
 
 
 
