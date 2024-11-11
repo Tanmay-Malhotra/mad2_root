@@ -80,6 +80,23 @@ api_handler.add_resource(AcceptNegotiatedAdRequest, '/accept_negotiated_ad_reque
 api_handler.add_resource(RejectNegotiatedAdRequest, '/reject_negotiated_ad_request/<int:ad_request_id>')
 
 
+#-------admin -------------------
+from backend.routes.admin import AdminDashboardView,ApproveSponsorView,RejectSponsorView,ToggleFlagSponsorView,ToggleFlagAdRequestView,ToggleFlagCampaignView,ToggleFlagInfluencerView
+api_handler.add_resource(AdminDashboardView, '/admin_dashboard')
+api_handler.add_resource(ApproveSponsorView, '/sponsor/approve/<int:sponsor_id>')
+api_handler.add_resource(RejectSponsorView, '/sponsor/reject/<int:sponsor_id>')
+api_handler.add_resource(ToggleFlagSponsorView, '/sponsor/toggle_flag/<int:sponsor_id>')
+
+
+api_handler.add_resource(ToggleFlagInfluencerView, '/influencer/toggle_flag/<int:influencer_id>')
+api_handler.add_resource(ToggleFlagCampaignView, '/campaign/toggle_flag/<int:campaign_id>')
+api_handler.add_resource(ToggleFlagAdRequestView, '/adrequest/toggle_flag/<int:ad_request_id>')
+
+from backend.routes.admin import AdminDeleteAdRequestView,AdminDeleteCampaignView,AdminDeleteInfluencerView,AdminDeleteSponsorView
+api_handler.add_resource(AdminDeleteSponsorView, '/admin/sponsor/delete/<int:sponsor_id>')
+api_handler.add_resource(AdminDeleteInfluencerView, '/admin/influencer/delete/<int:influencer_id>')
+api_handler.add_resource(AdminDeleteCampaignView, '/admin/campaign/delete/<int:campaign_id>')
+api_handler.add_resource(AdminDeleteAdRequestView, '/admin/ad_request/delete/<int:ad_request_id>')
 
 
 if __name__ == '__main__':
