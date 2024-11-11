@@ -37,6 +37,27 @@ from flask_restful import Resource
 from flask_security import auth_token_required, roles_accepted
 from backend.models import db, SponsorProfile
 
+class SponsorsListView(Resource):
+    @auth_token_required
+    @roles_accepted('admin')
+    def get(self):
+        # Get all sponsors with their approval status and flag status
+        sponsors = SponsorProfile.query.all()
+        sponsors_data = [
+            {
+                "id": sponsor.id,
+                "name": sponsor.name,
+                "user": {
+                    "email": sponsor.user.email  # Assuming there is a relationship between SponsorProfile and User
+                },
+                "industry": sponsor.industry,
+                "flagged": sponsor.flagged,
+                "approved": sponsor.approved
+            }
+            for sponsor in sponsors
+        ]
+        return jsonify({"sponsors": sponsors_data})
+
 class ApproveSponsorView(Resource):
     @auth_token_required
     @roles_accepted('admin')  # Only admins can approve
@@ -67,7 +88,7 @@ class RejectSponsorView(Resource):
         
         return make_response(jsonify({"message": "Sponsor account rejected successfully"}), 200)
     
-    from flask import jsonify, make_response
+from flask import jsonify, make_response
 from flask_restful import Resource
 from flask_security import auth_token_required, roles_accepted
 from backend.models import db, SponsorProfile

@@ -1,5 +1,18 @@
 <template>
   <div class="admin-dashboard">
+    <!-- Navigation Bar -->
+    <header class="navbar">
+      <div class="navbar-brand">SPOC Administrator</div>
+      <div class="navbar-links">
+        <router-link to="/admin" class="nav-link">Home</router-link>
+        <router-link to="/admin/sponsors" class="nav-link">Sponsors</router-link>
+        <router-link to="/campaigns" class="nav-link">Campaigns</router-link>
+        <router-link to="/influencers" class="nav-link">Influencers</router-link>
+        <button class="nav-link logout" @click="logout">Logout</button>
+      </div>
+    </header>
+
+    <!-- Content Section -->
     <h1>Welcome, Admin</h1>
     <h2>Manage SPOC</h2>
     <div class="stats-cards">
@@ -38,19 +51,18 @@ export default {
   },
   methods: {
     fetchStats() {
-      const token = localStorage.getItem('authToken'); // Retrieve the token from localStorage
+      const token = localStorage.getItem('authToken');
 
       if (!token) {
-        // If token is not found, redirect to login page
         this.$router.push('/login');
         return;
       }
 
       axios
         .get('http://127.0.0.1:5000/admin_dashboard', {
-            headers: {
-                'Authentication-Token': token 
-            }
+          headers: {
+            'Authentication-Token': token
+          }
         })
         .then(response => {
           const data = response.data;
@@ -67,28 +79,76 @@ export default {
         .catch(error => {
           console.error("Error fetching stats:", error);
           if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-            // Authentication error, redirect to login
-            localStorage.removeItem('authToken'); // Remove invalid token
+            localStorage.removeItem('authToken');
             this.$router.push('/');
           } else {
-            // Other error, display error message
             this.errorMessage = 'An error occurred while fetching statistics. Please try again later.';
           }
         });
+    },
+    logout() {
+      localStorage.removeItem('authToken');
+      this.$router.push('/login');
     }
   }
 };
 </script>
 
 <style scoped>
-.admin-dashboard {
-  padding: 20px;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  margin: 0;
 }
+
+/* Navbar styling */
+.navbar {
+  background-color: #333;
+  color: white;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.logout {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 
 .stats-cards {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
+  margin-top: 20px;
 }
 
 .card {
