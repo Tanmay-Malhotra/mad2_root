@@ -33,7 +33,7 @@ with app.app_context():
     if not user_datastore.find_user(email="influencer@spoc.com"):
         influencer_user = user_datastore.create_user(
             email="influencer@spoc.com",
-            password="influencer123",  # Plain text password
+            password="pass",  # Plain text password
             user_type="influencer"
         )
         user_datastore.add_role_to_user(influencer_user, "influencer")
@@ -52,7 +52,7 @@ with app.app_context():
     if not user_datastore.find_user(email="sponsor@spoc.com"):
         sponsor_user = user_datastore.create_user(
             email="sponsor@spoc.com",
-            password="sponsor123",  # Plain text password
+            password="pass",  # Plain text password
             user_type="sponsor"
         )
         user_datastore.add_role_to_user(sponsor_user, "sponsor")
