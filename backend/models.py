@@ -76,3 +76,4 @@ class AdRequest(db.Model):
     flagged = db.Column(db.String(10), nullable=False, default="no")
     payment_amount = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(50), nullable=False, default='Request Sent')
+    

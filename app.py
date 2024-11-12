@@ -90,6 +90,10 @@ api_handler.add_resource(RejectSponsorView, '/sponsor/reject/<int:sponsor_id>')
 api_handler.add_resource(ToggleFlagSponsorView, '/sponsor/toggle_flag/<int:sponsor_id>')
 api_handler.add_resource(SponsorsListView, '/admin/sponsors')
 
+from backend.routes.admin import AllCampaignsView,AllInfluencersView
+api_handler.add_resource(AllCampaignsView, '/admin/campaigns')
+api_handler.add_resource(AllInfluencersView, '/admin/influencers')
+
 #Flag
 api_handler.add_resource(ToggleFlagInfluencerView, '/influencer/toggle_flag/<int:influencer_id>')
 api_handler.add_resource(ToggleFlagCampaignView, '/campaign/toggle_flag/<int:campaign_id>')

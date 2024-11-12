@@ -111,6 +111,54 @@ class ToggleFlagSponsorView(Resource):
             "sponsor_id": sponsor_id,
             "new_flagged_status": sponsor.flagged
         }), 200)
+    
+
+
+from flask import jsonify, make_response
+from flask_restful import Resource
+from flask_security import auth_token_required, roles_accepted
+from backend.models import Campaign  # Assuming your Campaign model is imported here
+
+class AllCampaignsView(Resource):
+    @auth_token_required
+    @roles_accepted('admin')
+    def get(self):
+        campaigns = Campaign.query.all()
+        campaigns_data = [
+            {
+                "id": campaign.id,
+                "name": campaign.name,
+                "status": campaign.status,
+                "category": campaign.category,
+                "budget": campaign.budget,
+                "flagged": campaign.flagged
+            }
+            for campaign in campaigns
+        ]
+        return make_response(jsonify({"campaigns": campaigns_data}), 200)
+
+  # Assuming your Influencer model is imported here
+
+class AllInfluencersView(Resource):
+    @auth_token_required
+    @roles_accepted('admin')
+    def get(self):
+        influencers = InfluencerProfile.query.all()
+        influencers_data = [
+            {
+                "id": influencer.id,
+                "name": influencer.name,
+                "industry": influencer.industry,
+                "platform": influencer.platform,
+                "followers": influencer.followers,
+                "flagged": influencer.flagged
+            }
+            for influencer in influencers
+        ]
+        return make_response(jsonify({"influencers": influencers_data}), 200)
+
+
+
 
 from flask import jsonify, make_response
 from flask_restful import Resource
