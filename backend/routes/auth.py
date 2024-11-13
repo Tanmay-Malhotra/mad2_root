@@ -37,7 +37,7 @@ class Signin(Resource):
         
         return make_response(jsonify({"message": "user not found"}), 404) """
 
-class Signin(Resource):
+""" class Signin(Resource):
     def post(self):
         data = request.get_json()
         email = data.get('email')
@@ -78,7 +78,66 @@ class Signin(Resource):
                 return make_response(jsonify({"message": "invalid password"}), 401)
         
         return make_response(jsonify({"message": "user not found"}), 404)
-    
+     """
+
+class Signin(Resource):
+    def post(self):
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+
+        if not email:
+            return make_response(jsonify({"message": "email is required"}), 400)
+        if not password:
+            return make_response(jsonify({"message": "password is required"}), 400)
+
+        # Find the user by email
+        user = user_datastore.find_user(email=email)
+        if user:
+            if verify_password(password, user.password):
+                # Check if the user has a sponsor profile or influencer profile
+                sponsor_profile = SponsorProfile.query.filter_by(user_id=user.id).first()
+                influencer_profile = InfluencerProfile.query.filter_by(user_id=user.id).first()
+                
+                # Initialize sponsor_id and influencer_id as None
+                sponsor_id = sponsor_profile.id if sponsor_profile else None
+                influencer_id = influencer_profile.id if influencer_profile else None
+
+                # Check if the sponsor is approved if applicable
+                if sponsor_profile and not sponsor_profile.approved:
+                    return make_response(jsonify({
+                        "message": "Admin approval is required for sponsor accounts."
+                    }), 403)
+
+                # Generate auth token and log in the user if approved or not a sponsor
+                token = user.get_auth_token()
+                if token:
+                    login_user(user)
+                    db.session.commit()
+
+                # Build response data
+                response_data = {
+                    "message": "login successful",
+                    "authToken": token,
+                    "email": user.email,
+                    "role": user.roles[0].name,  # assuming the user has only one role
+                    "id": user.id
+                }
+
+                # Include sponsorId if the user is a sponsor
+                if sponsor_id:
+                    response_data["sponsorId"] = sponsor_id
+
+                # Include influencerId if the user is an influencer
+                if influencer_id:
+                    response_data["influencerId"] = influencer_id
+
+                return make_response(jsonify(response_data), 200)
+            else:
+                return make_response(jsonify({"message": "invalid password"}), 401)
+
+        return make_response(jsonify({"message": "user not found"}), 404)
+
 class InfluencerSignup(Resource):
     def post(self):
         data = request.get_json()

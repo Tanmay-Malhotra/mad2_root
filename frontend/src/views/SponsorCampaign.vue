@@ -10,8 +10,8 @@
       </div>
     </header>
     <div class="content">
-      <h1>Your Campaigns</h1>
       <button @click="navigateToCreateCampaign" class="button create-button">Create New Campaign</button>
+      <h1>Your Campaigns</h1>
       <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
       <div v-if="campaigns.length">
         <div v-for="campaign in campaigns" :key="campaign.id" class="campaign-card">

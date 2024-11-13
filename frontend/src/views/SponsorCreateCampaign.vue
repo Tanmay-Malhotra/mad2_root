@@ -34,27 +34,29 @@ export default {
     };
   },
   methods: {
-    createCampaign() {
-      const token = localStorage.getItem('authToken');
-      const data = {
-        name: this.name,
-        category: this.category,
-        budget: this.budget,
-        start_date: this.start_date,
-        end_date: this.end_date
-      };
-      axios
-        .post('http://127.0.0.1:5000/sponsor/create_camp', data, {
-          headers: { 'Authentication-Token': token }
-        })
-        .then(response => {
-          this.successMessage = response.data.message;
-          this.$router.push('/campaigns');
-        })
-        .catch(error => {
-          console.error("Error creating campaign:", error);
-        });
-    }
+  createCampaign() {
+  const token = localStorage.getItem('authToken');
+  console.log("Auth Token:", token);  // Debugging line
+  const data = {
+    name: this.name,
+    category: this.category,
+    budget: this.budget,
+    start_date: this.start_date,
+    end_date: this.end_date
+  };
+  axios
+    .post('http://127.0.0.1:5000/sponsor/create_camp', data, {
+      headers: { 'Authentication-Token': token }
+    })
+    .then(response => {
+      this.successMessage = response.data.message;
+      this.$router.push('/campaigns');
+    })
+    .catch(error => {
+      console.error("Error creating campaign:", error);
+    });
+}
+
   }
 };
 </script>

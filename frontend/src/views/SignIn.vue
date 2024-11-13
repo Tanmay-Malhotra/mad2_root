@@ -1,4 +1,4 @@
- <template>
+<template>
   <div class="login-page">
     <div class="login-container">
       <h1>Login @ SPOC</h1>
@@ -50,9 +50,22 @@ export default {
         .then(response => {
           if (response.status === 200) {
             const token = response.data.authToken;
-            const role = response.data.role; // Capture the user's role from the response
+            const role = response.data.role;
+            const sponsorId = response.data.sponsorId; // Capture sponsorId if available
+            const influencerId = response.data.influencerId; // Capture influencerId if available
 
+            // Store authToken in localStorage
             localStorage.setItem('authToken', token);
+
+            // Store sponsorId if the user is a sponsor
+            if (role === 'sponsor' && sponsorId) {
+              localStorage.setItem('sponsorId', sponsorId);
+            }
+
+            // Store influencerId if the user is an influencer
+            if (role === 'influencer' && influencerId) {
+              localStorage.setItem('influencerId', influencerId);
+            }
 
             // Redirect based on the role
             if (role === 'admin') {
@@ -70,7 +83,7 @@ export default {
         })
         // eslint-disable-next-line
         .catch(error => {
-            this.errorMessage = 'Failed to log in. Please check your credentials.';
+          this.errorMessage = 'Failed to log in. Please check your credentials.';
         });
     }
   }

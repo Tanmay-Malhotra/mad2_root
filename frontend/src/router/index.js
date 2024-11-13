@@ -7,7 +7,7 @@ import AdminInfluencers from '../views/AdminInfluencer.vue';
 import InfluencerDashboard from '../views/InfluencerDashboard.vue';
 import SponsorDashboard from '../views/SponsorDashboard.vue'; // Import SponsorDashboard component
 import SponsorCampaigns from '../views/SponsorCampaign.vue'; // Import SponsorCampaigns component
-import CreateCampaign from '../views/SponsorCreateCampaign.vue'; // Import CreateCampaign component
+import createCampaign from '../views/SponsorCreateCampaign.vue'; // Import CreateCampaign component
 import EditCampaign from '../views/SponsorEditCampaign.vue'; // Import EditCampaign component
 import ViewAdRequests from '../views/SponsorViewAdreq.vue'; // Import ViewAdRequests component
 import InfluencerSignup from '../views/InfluencerSignup.vue'; // Import InfluencerSignup component
@@ -21,7 +21,7 @@ const routes = [
   { path: '/influencer-dashboard', name: 'InfluencerDashboard', component: InfluencerDashboard },
   { path: '/sponsor-dashboard', name: 'SponsorDashboard', component: SponsorDashboard }, // Route for SponsorDashboard
   { path: '/campaigns', name: 'SponsorCampaigns', component: SponsorCampaigns }, // Route for listing Sponsor's campaigns
-  { path: '/create-campaign', name: 'CreateCampaign', component: CreateCampaign }, // Route for creating a new campaign
+  { path: '/create-campaign', name: 'createCampaign', component: createCampaign }, // Route for creating a new campaign
   { path: '/edit-campaign/:campaignId', name: 'EditCampaign', component: EditCampaign, props: true }, // Route for editing a campaign
   { path: '/view-ad-requests/:campaignId', name: 'ViewAdRequests', component: ViewAdRequests, props: true }, // Route for viewing ad requests
   { path: '/admin/influencers', name: 'AdminInfluencers', component: AdminInfluencers },
