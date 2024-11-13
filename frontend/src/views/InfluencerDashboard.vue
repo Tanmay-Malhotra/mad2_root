@@ -4,7 +4,7 @@
     <header>
       <div class="navbar-brand">Influencer @ SPOC</div>
       <div class="user-actions">
-        <router-link to="/profile" class="nav-link">Profile</router-link>
+        <router-link to="/influencer-dashboard" class="nav-link">Profile</router-link>
         <router-link to="/ad-management" class="nav-link">Ad Management</router-link>
         <router-link to="/find" class="nav-link">Find</router-link>
         <button class="button logout" @click="logout">Logout</button>
@@ -13,7 +13,7 @@
     
     <!-- Content Section -->
     <div class="content">
-      <h1>Welcome, inf</h1>
+      <h1>Welcome, influencer</h1>
       <p>Your influence, empowered @ SPOC</p>
     </div>
   </div>
