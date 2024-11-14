@@ -13,7 +13,8 @@ import ViewAdRequests from '../views/SponsorViewAdreq.vue';
 import InfluencerSignup from '../views/InfluencerSignup.vue';
 import SponsorSignup from '../views/SponsorSignup.vue';
 import SponsorFindInf from '../views/SponsorFindinf.vue';
-import SendAdRequest from '../views/SponsorSendAdreq.vue'; // Import the SendAdRequest component
+import SendAdRequest from '../views/SponsorSendAdreq.vue';
+import SponsorUpdateadreq from '../views/SponsorUpdateadreq.vue'; // Import the SponsorUpdateadreq component
 
 const routes = [
   { path: '/', name: 'home', component: SignIn },
@@ -35,7 +36,13 @@ const routes = [
     name: 'SponsorSendAdreq', 
     component: SendAdRequest, 
     props: route => ({ influencerId: parseInt(route.params.influencerId), influencerName: route.query.name }) 
-  } // Route for sending ad requests with influencerId and influencerName as props
+  },
+  { 
+    path: '/edit-ad-request/:campaignId/:adRequestId', 
+    name: 'SponsorUpdateadreq', 
+    component: SponsorUpdateadreq, 
+    props: true 
+  } // Route for updating an ad request with both campaignId and adRequestId as props
 ];
 
 const router = createRouter({

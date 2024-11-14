@@ -1,127 +1,47 @@
 <template>
-  <div class="ad-requests">
+  <div class="ad-requests" v-if="campaignId">
     <!-- Header with Go Back Button and Title -->
     <div class="header">
       <h1>Ad Requests for Campaign: {{ campaignName }}</h1>
       <button @click="goBack" class="button go-back-button">Go Back</button>
     </div>
 
-    <!-- New Negotiations Section -->
-    <div class="request-section">
-      <h2>New Negotiations</h2>
-      <table v-if="newNegotiations.length">
-        <thead>
-          <tr>
-            <th>Influencer Name</th>
-            <th>Requirements</th>
-            <th>Payment Amount</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="adRequest in newNegotiations" :key="adRequest.id">
-            <td>{{ adRequest.influencer_name }}</td>
-            <td>{{ adRequest.requirements }}</td>
-            <td>${{ adRequest.payment_amount }}</td>
-            <td>{{ adRequest.status }}</td>
-            <td>
-              <button @click="redirectToEdit(adRequest.id)" class="button edit-button">Edit</button>
-              <button @click="deleteAdRequest(adRequest.id)" class="button delete-button">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p v-else>No new negotiations found.</p>
+    <!-- Display ad request sections if there are any requests, else show the no ad requests message -->
+    <div v-if="adRequests.length > 0">
+      <!-- Ad request sections for different statuses -->
+      <div class="request-section" v-for="section in sections" :key="section.status">
+        <h2>{{ section.title }}</h2>
+        <table v-if="section.requests.length">
+          <thead>
+            <tr>
+              <th>Influencer Name</th>
+              <th>Requirements</th>
+              <th>Payment Amount</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="adRequest in section.requests" :key="adRequest.id">
+              <td>{{ adRequest.influencer_name }}</td>
+              <td>{{ adRequest.requirements }}</td>
+              <td>${{ adRequest.payment_amount }}</td>
+              <td>{{ adRequest.status }}</td>
+              <td>
+                <button @click="redirectToEdit(adRequest.id)" class="button edit-button">Edit</button>
+                <button @click="deleteAdRequest(adRequest.id)" class="button delete-button">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p v-else>No {{ section.title.toLowerCase() }} found.</p>
+      </div>
     </div>
 
-    <!-- Pending Requests Section -->
-    <div class="request-section">
-      <h2>Pending Requests</h2>
-      <table v-if="pendingRequests.length">
-        <thead>
-          <tr>
-            <th>Influencer Name</th>
-            <th>Requirements</th>
-            <th>Payment Amount</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="adRequest in pendingRequests" :key="adRequest.id">
-            <td>{{ adRequest.influencer_name }}</td>
-            <td>{{ adRequest.requirements }}</td>
-            <td>${{ adRequest.payment_amount }}</td>
-            <td>{{ adRequest.status }}</td>
-            <td>
-              <button @click="redirectToEdit(adRequest.id)" class="button edit-button">Edit</button>
-              <button @click="deleteAdRequest(adRequest.id)" class="button delete-button">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p v-else>No pending requests found.</p>
-    </div>
+    <!-- No ad requests message -->
+    <p v-if="adRequests.length === 0">No ad requests available for this campaign.</p>
 
-    <!-- Active Requests Section -->
-    <div class="request-section">
-      <h2>Active Requests</h2>
-      <table v-if="activeRequests.length">
-        <thead>
-          <tr>
-            <th>Influencer Name</th>
-            <th>Requirements</th>
-            <th>Payment Amount</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="adRequest in activeRequests" :key="adRequest.id">
-            <td>{{ adRequest.influencer_name }}</td>
-            <td>{{ adRequest.requirements }}</td>
-            <td>${{ adRequest.payment_amount }}</td>
-            <td>{{ adRequest.status }}</td>
-            <td>
-              <button @click="redirectToEdit(adRequest.id)" class="button edit-button">Edit</button>
-              <button @click="deleteAdRequest(adRequest.id)" class="button delete-button">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p v-else>No active requests found.</p>
-    </div>
-
-    <!-- Rejected Requests Section -->
-    <div class="request-section">
-      <h2>Rejected Requests</h2>
-      <table v-if="rejectedRequests.length">
-        <thead>
-          <tr>
-            <th>Influencer Name</th>
-            <th>Requirements</th>
-            <th>Payment Amount</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="adRequest in rejectedRequests" :key="adRequest.id">
-            <td>{{ adRequest.influencer_name }}</td>
-            <td>{{ adRequest.requirements }}</td>
-            <td>${{ adRequest.payment_amount }}</td>
-            <td>{{ adRequest.status }}</td>
-            <td>
-              <button @click="redirectToEdit(adRequest.id)" class="button edit-button">Edit</button>
-              <button @click="deleteAdRequest(adRequest.id)" class="button delete-button">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p v-else>No rejected requests found.</p>
-    </div>
-    
+    <!-- Error and Success Messages -->
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
     <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
   </div>
@@ -141,24 +61,25 @@ export default {
     };
   },
   computed: {
-    newNegotiations() {
-      return this.adRequests.filter(req => req.status === "Request Negotiated");
-    },
-    pendingRequests() {
-      return this.adRequests.filter(req => req.status === "Request Sent");
-    },
-    activeRequests() {
-      return this.adRequests.filter(req => req.status === "Request Accepted");
-    },
-    rejectedRequests() {
-      return this.adRequests.filter(req => req.status === "Request Rejected");
+    // Categorize ad requests based on status
+    sections() {
+      return [
+        { title: 'New Negotiations', status: 'Request Negotiated', requests: this.adRequests.filter(req => req.status === 'Request Negotiated') },
+        { title: 'Pending Requests', status: 'Request Sent', requests: this.adRequests.filter(req => req.status === 'Request Sent') },
+        { title: 'Active Requests', status: 'Request Accepted', requests: this.adRequests.filter(req => req.status === 'Request Accepted') },
+        { title: 'Rejected Requests', status: 'Request Rejected', requests: this.adRequests.filter(req => req.status === 'Request Rejected') }
+      ];
     }
   },
   created() {
-    this.fetchAdRequests();
+    // Redirect if campaignId is missing
+    if (!this.campaignId) {
+      this.goBack();
+    } else {
+      this.fetchAdRequests();
+    }
   },
   methods: {
-    // Fetch ad requests for the campaign
     fetchAdRequests() {
       const token = localStorage.getItem('authToken');
       axios
@@ -166,22 +87,22 @@ export default {
           headers: { 'Authentication-Token': token }
         })
         .then(response => {
-          this.adRequests = response.data.ad_requests;
+          this.adRequests = response.data.ad_requests || [];
+          if (this.adRequests.length === 0) {
+            this.successMessage = "No ad requests available for this campaign.";
+          }
         })
         .catch(error => {
           console.error("Error fetching ad requests:", error);
           this.errorMessage = "Error fetching ad requests.";
         });
     },
-    // Go back to the campaigns page
     goBack() {
       this.$router.push('/campaigns');
     },
-    // Redirect to the Edit Ad Request page
     redirectToEdit(adRequestId) {
-      this.$router.push({ name: 'EditAdRequest', params: { adRequestId } });
+      this.$router.push({ name: 'SponsorUpdateadreq', params: { adRequestId, campaignId: this.campaignId } });
     },
-    // Delete the ad request
     deleteAdRequest(adRequestId) {
       const token = localStorage.getItem('authToken');
       axios
@@ -189,9 +110,15 @@ export default {
           headers: { 'Authentication-Token': token }
         })
         .then(() => {
+          // Filter out the deleted request
           this.adRequests = this.adRequests.filter(adRequest => adRequest.id !== adRequestId);
           this.successMessage = "Ad request deleted successfully!";
           this.errorMessage = '';
+
+          // If no ad requests left, show the no ad requests message
+          if (this.adRequests.length === 0) {
+            this.successMessage = "No ad requests available for this campaign.";
+          }
         })
         .catch(error => {
           console.error("Error deleting ad request:", error);
@@ -243,6 +170,7 @@ h1 {
   font-size: 1.5em;
   font-weight: bold;
   margin-bottom: 10px;
+  color: #333;
 }
 
 table {
@@ -251,7 +179,8 @@ table {
   margin-bottom: 20px;
 }
 
-table th, table td {
+table th,
+table td {
   padding: 10px;
   border: 1px solid #ddd;
   text-align: center;
@@ -280,11 +209,13 @@ table th, table td {
   color: red;
   font-weight: bold;
   margin-top: 10px;
+  text-align: center;
 }
 
 .success-message {
   color: green;
   font-weight: bold;
   margin-top: 10px;
+  text-align: center;
 }
 </style>

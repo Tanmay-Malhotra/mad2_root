@@ -279,7 +279,7 @@ class ViewAdRequests(Resource):
         return make_response(jsonify({"ad_requests": ad_requests_data}), 200)
 
 # Update Ad Request 
-class UpdateAdRequest(Resource):
+""" class UpdateAdRequest(Resource):
     @auth_token_required
     def put(self, ad_request_id):
         # Get the ad request by ad_request_id
@@ -315,6 +315,85 @@ class UpdateAdRequest(Resource):
         db.session.commit()
 
         return make_response(jsonify({"message": "Ad request updated successfully!"}), 200)
+ """
+""" class UpdateAdRequest(Resource):
+    @auth_token_required
+    def put(self, ad_request_id):
+        # Get the ad request by ad_request_id
+        ad_request = AdRequest.query.get(ad_request_id)
+        
+        # Verify if the ad request exists
+        if not ad_request:
+            return make_response(jsonify({"error": "Ad request not found"}), 404)
+
+        # Verify if the current user is authorized to update this ad request
+        campaign = Campaign.query.get(ad_request.campaign_id)
+        if campaign.sponsor_profile.user_id != current_user.id:
+            return make_response(jsonify({"error": "User not authorized to update this ad request"}), 403)
+
+        # Check if the status of the ad request is 'Request Sent'
+        if ad_request.status != "Request Sent":
+            return make_response(jsonify({"error": "Ad request cannot be edited in the current status"}), 400)
+
+        # Parse data from the JSON request
+        data = request.get_json()
+        requirements = data.get('requirements')
+        payment_amount = data.get('payment_amount')
+        status = data.get('status')
+
+        # Update ad request details with new values if they are provided
+        if requirements is not None:
+            ad_request.requirements = requirements
+        if payment_amount is not None:
+            try:
+                ad_request.payment_amount = float(payment_amount)
+            except ValueError:
+                return make_response(jsonify({"error": "Invalid payment amount"}), 400)
+        if status is not None:
+            ad_request.status = status
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return make_response(jsonify({"message": "Ad request updated successfully!"}), 200) """
+
+class UpdateAdRequest(Resource):
+    @auth_token_required
+    def put(self, ad_request_id):
+        # Get the ad request by ad_request_id
+        ad_request = AdRequest.query.get(ad_request_id)
+        
+        # Verify if the ad request exists
+        if not ad_request:
+            return make_response(jsonify({"error": "Ad request not found"}), 404)
+
+        # Verify if the current user is authorized to update this ad request
+        campaign = Campaign.query.get(ad_request.campaign_id)
+        if campaign.sponsor_profile.user_id != current_user.id:
+            return make_response(jsonify({"error": "User not authorized to update this ad request"}), 403)
+
+        # Check if the status of the ad request is 'Request Sent'
+        if ad_request.status != "Request Sent":
+            return make_response(jsonify({"error": "Ad request cannot be edited in the current status"}), 400)
+
+        # Parse data from the JSON request
+        data = request.get_json()
+        requirements = data.get('requirements')
+        payment_amount = data.get('payment_amount')
+
+        # Update ad request details with new values if they are provided
+        if requirements is not None:
+            ad_request.requirements = requirements
+        if payment_amount is not None:
+            try:
+                ad_request.payment_amount = float(payment_amount)
+            except ValueError:
+                return make_response(jsonify({"error": "Invalid payment amount"}), 400)
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return make_response(jsonify({"message": "Ad request updated successfully!"}), 200)
 
 
 
@@ -334,7 +413,7 @@ class DeleteAdRequest(Resource):
             return make_response(jsonify({"error": "User not authorized to delete this ad request"}), 403)
 
         # Check if the ad request status is "Request Sent"
-        if ad_request.status != "Request Sent":
+        if ad_request.status != "Request Sent" and ad_request.status != "Request Negotiated":
             return make_response(jsonify({"error": "Ad request cannot be deleted as it has already been accepted or rejected"}), 400)
 
         # Delete the ad request
