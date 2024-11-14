@@ -13,8 +13,10 @@
 
     <!-- Content Section -->
     <div class="content">
-      <button @click="navigateToCreateCampaign" class="button create-button">Create New Campaign</button>
-      <h1>Your Campaigns</h1>
+      <div class="header">
+        <h1>Your Campaigns</h1>
+        <button @click="navigateToCreateCampaign" class="button create-button">Create New Campaign</button>
+      </div>
       <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
       <div v-if="campaigns.length">
         <div v-for="campaign in campaigns" :key="campaign.id" class="campaign-card">
@@ -160,10 +162,16 @@ header {
   padding: 20px;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 h1 {
   font-size: 2em;
   font-weight: bold;
-  margin-bottom: 20px;
 }
 
 .create-button {
@@ -174,7 +182,6 @@ h1 {
   border-radius: 5px;
   cursor: pointer;
   font-size: 1em;
-  margin-bottom: 20px;
 }
 
 .success-message {
