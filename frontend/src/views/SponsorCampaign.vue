@@ -1,14 +1,17 @@
 <template>
   <div>
+    <!-- Navigation Bar -->
     <header>
       <div class="navbar-brand">Sponsor @ SPOC</div>
       <div class="user-actions">
         <router-link to="/sponsor-dashboard" class="nav-link">Profile</router-link>
         <router-link to="/campaigns" class="nav-link">Campaigns</router-link>
-        <router-link to="/find" class="nav-link">Find</router-link>
+        <router-link to="/find-influencers" class="nav-link">Find</router-link>
         <button class="button logout" @click="logout">Logout</button>
       </div>
     </header>
+
+    <!-- Content Section -->
     <div class="content">
       <button @click="navigateToCreateCampaign" class="button create-button">Create New Campaign</button>
       <h1>Your Campaigns</h1>
@@ -94,7 +97,20 @@ export default {
 </script>
 
 <style scoped>
-/* Navbar styling */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
 header {
   background-color: #333;
   color: white;
@@ -111,6 +127,12 @@ header {
 .navbar-brand {
   font-weight: bold;
   font-size: 24px;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .nav-link {
@@ -193,5 +215,3 @@ h1 {
   background-color: #dc3545;
 }
 </style>
-
-

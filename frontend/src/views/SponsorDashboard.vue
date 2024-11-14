@@ -6,7 +6,7 @@
       <div class="user-actions">
         <router-link to="/sponsor-dashboard" class="nav-link">Profile</router-link>
         <router-link to="/campaigns" class="nav-link">Campaigns</router-link>
-        <router-link to="/find" class="nav-link">Find</router-link>
+        <router-link to="/find-influencers" class="nav-link">Find</router-link>
         <button class="button logout" @click="logout">Logout</button>
       </div>
     </header>
