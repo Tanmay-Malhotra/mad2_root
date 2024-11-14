@@ -222,7 +222,8 @@ class CreateAdRequest(Resource):
 
         return make_response(jsonify({"message": "Ad request sent successfully!"}), 201)
     
-class ViewAdRequests(Resource):
+# DO I NEED THE METHOD BELOW ?
+""" class ViewAdRequests(Resource):
     @auth_token_required
     def get(self, campaign_id):
         # Verify if the campaign exists and if the current user is authorized
@@ -247,8 +248,36 @@ class ViewAdRequests(Resource):
             for req in ad_requests
         ]
 
-        return make_response(jsonify({"ad_requests": ad_requests_data}), 200)
+        return make_response(jsonify({"ad_requests": ad_requests_data}), 200) """
     
+class ViewAdRequests(Resource):
+    @auth_token_required
+    def get(self, campaign_id):
+        # Verify if the campaign exists and if the current user is authorized
+        campaign = Campaign.query.get(campaign_id)
+        if not campaign or campaign.sponsor_profile.user_id != current_user.id:
+            return make_response(jsonify({"error": "Campaign not found or not authorized"}), 403)
+
+        # Fetch all ad requests for the specified campaign
+        ad_requests = AdRequest.query.filter_by(campaign_id=campaign_id).all()
+        
+        # Manually convert each ad request to dictionary format with influencer name
+        ad_requests_data = [
+            {
+                "id": req.id,
+                "campaign_id": req.campaign_id,
+                "influencer_profile_id": req.influencer_profile_id,
+                "influencer_name": req.influencer_profile.name if req.influencer_profile else "N/A",
+                "requirements": req.requirements,
+                "flagged": req.flagged,
+                "payment_amount": req.payment_amount,
+                "status": req.status
+            }
+            for req in ad_requests
+        ]
+
+        return make_response(jsonify({"ad_requests": ad_requests_data}), 200)
+
 # Update Ad Request 
 class UpdateAdRequest(Resource):
     @auth_token_required

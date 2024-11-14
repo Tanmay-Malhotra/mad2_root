@@ -1,6 +1,11 @@
 <template>
   <div class="send-ad-request">
-    <h1>Send Ad Request to {{ influencerName }}</h1>
+    <!-- Header with Title and Go Back Button -->
+    <div class="header">
+      <h1>Send Ad Request to {{ influencerName }}</h1>
+      <button @click="goBack" class="button go-back-button">Go Back</button>
+    </div>
+
     <form @submit.prevent="submitAdRequest">
       <!-- Select Campaign Dropdown -->
       <div class="form-group">
@@ -85,6 +90,10 @@ export default {
           console.error("Error sending ad request:", error);
           this.errorMessage = error.response.data.error || "Failed to send ad request.";
         });
+    },
+    // Navigate back to the Find Influencers page
+    goBack() {
+      this.$router.push('/find-influencers');
     }
   }
 };
@@ -100,11 +109,16 @@ export default {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 h1 {
   font-size: 1.8em;
   font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
 }
 
 .form-group {
@@ -128,14 +142,24 @@ textarea {
   resize: none;
 }
 
-.button.send-request-button {
+.button {
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.send-request-button {
   background-color: #28a745;
   color: #fff;
   border: none;
-  padding: 10px 20px;
+}
+
+.go-back-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
   font-size: 1em;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 .error-message {
