@@ -18,7 +18,7 @@
               <th>Requirements</th>
               <th>Payment Amount</th>
               <th>Status</th>
-              <th v-if="section.status === 'Request Accepted' || section.status === 'Request Negotiated'">Action</th>
+              <th v-if="section.status === 'Request Sent' || section.status === 'Request Negotiated'">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -27,9 +27,15 @@
               <td>{{ adRequest.requirements }}</td>
               <td>${{ adRequest.payment_amount }}</td>
               <td>{{ adRequest.status }}</td>
-              <td v-if="adRequest.status === 'Request Accepted'">
-                <button @click="redirectToEdit(adRequest.id)" class="button edit-button">Edit</button>
-                <button @click="deleteAdRequest(adRequest.id)" class="button delete-button">Delete</button>
+              <td>
+                <div v-if="adRequest.status === 'Request Sent'">
+                  <button @click="redirectToEdit(adRequest.id)" class="button edit-button">Edit</button>
+                  <button @click="deleteAdRequest(adRequest.id)" class="button delete-button">Delete</button>
+                </div>
+                <div v-else-if="adRequest.status === 'Request Negotiated'">
+                  <button @click="acceptAdRequest(adRequest.id)" class="button accept-button">Accept</button>
+                  <button @click="rejectAdRequest(adRequest.id)" class="button reject-button">Reject</button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -125,6 +131,40 @@ export default {
           this.errorMessage = error.response.data.error || "Failed to delete ad request.";
           this.successMessage = '';
         });
+    },
+    acceptAdRequest(adRequestId) {
+      const token = localStorage.getItem('authToken');
+      axios
+        .put(`http://127.0.0.1:5000/accept_negotiated_ad_request/${adRequestId}`, null, {
+          headers: { 'Authentication-Token': token }
+        })
+        .then(() => {
+          this.successMessage = "Ad request accepted successfully!";
+          this.errorMessage = '';
+          this.fetchAdRequests(); // Refresh the requests to update status
+        })
+        .catch(error => {
+          console.error("Error accepting ad request:", error);
+          this.errorMessage = error.response.data.error || "Failed to accept ad request.";
+          this.successMessage = '';
+        });
+    },
+    rejectAdRequest(adRequestId) {
+      const token = localStorage.getItem('authToken');
+      axios
+        .put(`http://127.0.0.1:5000/reject_negotiated_ad_request/${adRequestId}`, null, {
+          headers: { 'Authentication-Token': token }
+        })
+        .then(() => {
+          this.successMessage = "Ad request rejected successfully!";
+          this.errorMessage = '';
+          this.fetchAdRequests(); // Refresh the requests to update status
+        })
+        .catch(error => {
+          console.error("Error rejecting ad request:", error);
+          this.errorMessage = error.response.data.error || "Failed to reject ad request.";
+          this.successMessage = '';
+        });
     }
   }
 };
@@ -201,6 +241,18 @@ table td {
 
 .delete-button {
   background-color: red;
+  color: white;
+  border: none;
+}
+
+.accept-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
+
+.reject-button {
+  background-color: #dc3545;
   color: white;
   border: none;
 }
