@@ -140,3 +140,60 @@ class RejectNegotiatedAdRequest(Resource):
         db.session.commit()
 
         return make_response(jsonify({"message": "Ad request rejected successfully!"}), 200)
+
+
+class AcceptInfluencerAdRequest(Resource):
+    @auth_token_required  # Decorator to ensure the user is authenticated
+    def put(self, ad_request_id):
+        # 1. Retrieve the ad request
+        ad_request = AdRequest.query.get(ad_request_id)
+
+        # 2. Check if the ad request exists
+        if not ad_request:
+            return make_response(jsonify({"error": "Ad request not found"}), 404)
+
+        # 3. Get the campaign associated with the ad request
+        campaign = Campaign.query.get(ad_request.campaign_id)
+
+        # 4. Check if the current user is the sponsor of the campaign
+        if not campaign or campaign.sponsor_profile.user_id != current_user.id:
+            return make_response(jsonify({"error": "User not authorized to accept this ad request"}), 403)
+
+        # 5. Check if the ad request status is "Request Sent by Influencer"
+        if ad_request.status != "Request Sent by Influencer":
+            return make_response(jsonify({"error": "Only ad requests sent by influencers can be accepted"}), 400)
+
+        # 6. Update the status to "Request Accepted"
+        ad_request.status = "Request Accepted"
+        db.session.commit()
+
+        # 7. Return success message
+        return make_response(jsonify({"message": "Ad request accepted successfully!"}), 200)
+
+class RejectInfluencerAdRequest(Resource):
+    @auth_token_required  # Decorator to ensure the user is authenticated
+    def put(self, ad_request_id):
+        # 1. Retrieve the ad request
+        ad_request = AdRequest.query.get(ad_request_id)
+
+        # 2. Check if the ad request exists
+        if not ad_request:
+            return make_response(jsonify({"error": "Ad request not found"}), 404)
+
+        # 3. Get the campaign associated with the ad request
+        campaign = Campaign.query.get(ad_request.campaign_id)
+
+        # 4. Check if the current user is the sponsor of the campaign
+        if not campaign or campaign.sponsor_profile.user_id != current_user.id:
+            return make_response(jsonify({"error": "User not authorized to reject this ad request"}), 403)
+
+        # 5. Check if the ad request status is "Request Sent by Influencer"
+        if ad_request.status != "Request Sent by Influencer":
+            return make_response(jsonify({"error": "Only ad requests sent by influencers can be rejected"}), 400)
+
+        # 6. Update the status to "Request Rejected"
+        ad_request.status = "Request Rejected"
+        db.session.commit()
+
+        # 7. Return success message
+        return make_response(jsonify({"message": "Ad request rejected successfully!"}), 200)

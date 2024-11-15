@@ -64,6 +64,7 @@ class Campaign(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=True)
     # add public/private campaign and respective functionality
+    type = db.Column(db.String(10), nullable=False, default="private")
 
     # Relationship with ad requests
     ad_requests = db.relationship('AdRequest', backref='campaign', lazy=True)

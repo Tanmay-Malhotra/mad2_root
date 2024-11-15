@@ -6,7 +6,7 @@
       <div class="user-actions">
         <router-link to="/influencer-dashboard" class="nav-link">Profile</router-link>
         <router-link :to="`/influencer/ad-requests/${influencerId}`" class="nav-link">Ad Management</router-link>
-        <router-link to="/find" class="nav-link">Find</router-link>
+        <router-link :to="`/public-campaigns/${influencerId}`" class="nav-link">Find Campaigns</router-link>
         <button class="button logout" @click="logout">Logout</button>
       </div>
     </header>
@@ -23,7 +23,7 @@
               <th>Requirements</th>
               <th>Payment Amount</th>
               <th>Status</th>
-              <th v-if="section.title === 'Pending Requests'">Actions</th>
+              <th v-if="sectionHasActions(section.title)">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -36,6 +36,9 @@
                 <button @click="acceptAdRequest(adRequest)">Accept</button>
                 <button @click="rejectAdRequest(adRequest)">Reject</button>
                 <button @click="negotiateAdRequest(adRequest)">Negotiate</button>
+              </td>
+              <td v-else-if="section.title === 'New Negotiations'">
+                <button @click="negotiateAdRequest(adRequest)">View Negotiation</button>
               </td>
             </tr>
           </tbody>
@@ -60,6 +63,7 @@ export default {
   computed: {
     sections() {
       return [
+        { title: 'Requests Sent', requests: this.adRequests.filter(ad => ad.status === 'Request Sent by Influencer') },
         { title: 'New Negotiations', requests: this.adRequests.filter(ad => ad.status === 'Request Negotiated') },
         { title: 'Pending Requests', requests: this.adRequests.filter(ad => ad.status === 'Request Sent') },
         { title: 'Active Requests', requests: this.adRequests.filter(ad => ad.status === 'Request Accepted') },
@@ -130,7 +134,10 @@ export default {
     logout() {
       localStorage.removeItem('authToken');
       this.$router.push('/');
-    }
+    },
+    sectionHasActions(title) {
+      return title === 'Pending Requests' || title === 'New Negotiations';
+    },
   }
 };
 </script>

@@ -7,7 +7,7 @@
         <router-link to="/influencer-dashboard" class="nav-link">Profile</router-link>
         <!-- Dynamic Ad Management Link with influencerId -->
         <router-link :to="`/influencer/ad-requests/${influencerId}`" class="nav-link">Ad Management</router-link>
-        <router-link to="/find" class="nav-link">Find</router-link>
+        <router-link :to="`/public-campaigns/${influencerId}`" class="nav-link">Find Campaigns</router-link>
         <button class="button logout" @click="logout">Logout</button>
       </div>
     </header>

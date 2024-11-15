@@ -16,8 +16,9 @@ import SponsorFindInf from '../views/SponsorFindinf.vue';
 import SendAdRequest from '../views/SponsorSendAdreq.vue';
 import SponsorUpdateadreq from '../views/SponsorUpdateadreq.vue';
 import InfluencerAdreq from '../views/InfluencerAdreq.vue';
-import InfluencerNegotiateAdreq from '../views/InfluencerNegotiateAdreq.vue'; // Import the negotiation component
-
+import InfluencerNegotiateAdreq from '../views/InfluencerNegotiateAdreq.vue';
+import InfluencerFindCampaigns from '../views/InfluencerFindCampaign.vue'; // Import the public campaigns component
+import InfluencerSendAdRequest from '../views/InfluencerSendadreq.vue';
 const routes = [
   { path: '/', name: 'home', component: SignIn },
   { path: '/admin-dashboard', name: 'AdminDashboard', component: AdminDashboard },
@@ -54,9 +55,28 @@ const routes = [
   {
     path: '/influencer/negotiate-ad-request/:adRequestId',
     name: 'InfluencerNegotiateAdRequest',
-    component: InfluencerNegotiateAdreq, // Use the imported component here
+    component: InfluencerNegotiateAdreq,
     props: true
-  }
+  },
+  {
+    path: '/public-campaigns/:influencerId',
+    name: 'InfluencerFindCampaigns',
+    component: InfluencerFindCampaigns,
+    props: true  // This passes `influencerId` as a prop to the component
+  },
+  
+    {
+      path: '/influencer/send-ad-request/:campaignId',
+      name: 'InfluencerSendAdRequest',
+      component: InfluencerSendAdRequest,
+      props: route => ({
+        campaignId: parseInt(route.params.campaignId),
+        campaignName: route.query.name,
+        influencerId: parseInt(route.query.influencerId)
+      })
+    },
+  
+  
 ];
 
 const router = createRouter({

@@ -124,3 +124,67 @@ class NegotiateAdRequest(Resource):
         db.session.commit()
 
         return make_response(jsonify({"message": "Ad request has been negotiated and sent back to sponsor for review"}), 200)
+
+# create a method for influencers to find campaigns
+
+from flask import jsonify, make_response
+from flask_restful import Resource
+from flask_security import auth_token_required, current_user
+from backend.models import Campaign, InfluencerProfile
+
+class PublicCampaignList(Resource):
+    @auth_token_required
+    def get(self, influencer_id):
+        # Verify that the current user is the owner of this influencer profile
+        influencer_profile = InfluencerProfile.query.filter_by(id=influencer_id, user_id=current_user.id).first()
+    
+            # Fetch public campaigns
+        public_campaigns = Campaign.query.filter_by(type="public", status="active").all()
+
+        # Serialize campaign data
+        campaigns_data = [
+            {
+                "id": campaign.id,
+                "name": campaign.name,
+                "category": campaign.category,
+                "budget": campaign.budget,
+                "start_date": campaign.start_date.strftime('%Y-%m-%d'),
+                "end_date": campaign.end_date.strftime('%Y-%m-%d') if campaign.end_date else None,
+                "sponsor_name": campaign.sponsor_profile.name
+            }
+            for campaign in public_campaigns
+        ]
+
+        return make_response(jsonify({"public_campaigns": campaigns_data}), 200)
+    
+class InfluencerInitiateAdRequest(Resource):
+    @auth_token_required
+    def post(self, campaign_id):
+        data = request.get_json()
+        requirements = data.get('requirements')
+        payment_amount = data.get('payment_amount')
+
+        # Verify if the campaign exists
+        campaign = Campaign.query.get(campaign_id)
+        if not campaign or campaign.type != 'public':
+            return make_response(jsonify({"error": "Campaign not found or not public"}), 404)
+
+        # Verify if the current user is an influencer
+        influencer_profile = InfluencerProfile.query.filter_by(user_id=current_user.id).first()
+        if not influencer_profile:
+            return make_response(jsonify({"error": "User is not an influencer"}), 403)
+
+        # Create a new ad request with the status "Request Initiated by Influencer"
+        new_ad_request = AdRequest(
+            campaign_id=campaign_id,
+            influencer_profile_id=influencer_profile.id,
+            requirements=requirements,
+            payment_amount=float(payment_amount),
+            status='Request Sent by Influencer'
+        )
+
+        db.session.add(new_ad_request)
+        db.session.commit()
+
+        return make_response(jsonify({"message": "Ad request sent to sponsor successfully!"}), 201)
+

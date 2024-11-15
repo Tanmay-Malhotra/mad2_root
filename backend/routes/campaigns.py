@@ -36,7 +36,8 @@ class Campaigns(Resource):
                 "budget": campaign.budget,
                 "flagged": campaign.flagged,
                 "start_date": campaign.start_date.strftime('%Y-%m-%d'),
-                "end_date": campaign.end_date.strftime('%Y-%m-%d') if campaign.end_date else None
+                "end_date": campaign.end_date.strftime('%Y-%m-%d') if campaign.end_date else None,
+                "type":campaign.type
             }
             for campaign in sponsor_profile.campaigns
         ]
@@ -100,7 +101,7 @@ class CreateCampaign(Resource):
 
 # edit campaign 
 # Use put for edit campaign, only works for campaigns that already exist
-class EditCampaign(Resource):
+""" class EditCampaign(Resource):
     @auth_token_required  # Require a valid authentication token
     def put(self, campaign_id):
         print("Reached EditCampaign PUT method")
@@ -147,7 +148,67 @@ class EditCampaign(Resource):
         # Commit the changes to the database
         db.session.commit()
 
+        return make_response(jsonify({"message": "Campaign updated successfully!"}), 200) """
+from flask import jsonify, make_response, request
+from flask_restful import Resource
+from flask_security import auth_token_required, current_user
+from datetime import date
+from backend.models import db, Campaign
+
+class EditCampaign(Resource):
+    @auth_token_required  # Require a valid authentication token
+    def put(self, campaign_id):
+        print("Reached EditCampaign PUT method")
+        # Find the campaign by campaign_id
+        campaign = Campaign.query.get(campaign_id)
+        
+        # Ensure the campaign exists
+        if not campaign:
+            return make_response(jsonify({"error": "Campaign not found"}), 404)
+
+        # Verify that the current user is authorized to edit this campaign
+        if current_user.user_type != 'sponsor' or campaign.sponsor_profile.user_id != current_user.id:
+            return make_response(jsonify({"error": "User not authorized to edit this campaign"}), 403)
+
+        # Parse data from JSON request
+        data = request.get_json()
+        name = data.get('name')
+        status = data.get('status')
+        category = data.get('category')
+        budget = data.get('budget')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        campaign_type = data.get('type')  # Parse the new 'type' field
+
+        # Update campaign details with new values if they are provided
+        if name:
+            campaign.name = name
+        if status:
+            campaign.status = status
+        if category:
+            campaign.category = category
+        if budget:
+            campaign.budget = int(budget)
+        if start_date:
+            try:
+                campaign.start_date = date.fromisoformat(start_date)
+            except ValueError:
+                return make_response(jsonify({"error": "Invalid start date format"}), 400)
+        if end_date:
+            try:
+                campaign.end_date = date.fromisoformat(end_date)
+            except ValueError:
+                return make_response(jsonify({"error": "Invalid end date format"}), 400)
+        if campaign_type:
+            if campaign_type not in ["public", "private"]:
+                return make_response(jsonify({"error": "Invalid type value; must be 'public' or 'private'"}), 400)
+            campaign.type = campaign_type  # Update the type field
+
+        # Commit the changes to the database
+        db.session.commit()
+
         return make_response(jsonify({"message": "Campaign updated successfully!"}), 200)
+
     
 
         

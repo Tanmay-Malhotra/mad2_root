@@ -25,7 +25,8 @@
           <p>Budget: {{ campaign.budget }}</p>
           <p>Category: {{ campaign.category }}</p>
           <p>Start Date: {{ campaign.start_date }}</p>
-          <p>End Date: {{ campaign.end_date }}</p>
+          <p>End Date: {{ campaign.end_date ? campaign.end_date : 'Not specified' }}</p>
+          <p>Type: {{campaign.type}}</p>
           <button @click="editCampaign(campaign.id)" class="button edit-button">Edit</button>
           <button @click="viewAdRequests(campaign.id)" class="button ad-requests-button">View Ad Requests</button>
           <button @click="deleteCampaign(campaign.id)" class="button delete-button">Delete</button>

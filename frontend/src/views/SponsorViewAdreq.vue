@@ -18,7 +18,7 @@
               <th>Requirements</th>
               <th>Payment Amount</th>
               <th>Status</th>
-              <th v-if="section.status === 'Request Sent' || section.status === 'Request Negotiated'">Action</th>
+              <th v-if="sectionHasActions(section.status)">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -27,15 +27,20 @@
               <td>{{ adRequest.requirements }}</td>
               <td>${{ adRequest.payment_amount }}</td>
               <td>{{ adRequest.status }}</td>
-              <td>
-                <div v-if="adRequest.status === 'Request Sent'">
-                  <button @click="redirectToEdit(adRequest.id)" class="button edit-button">Edit</button>
-                  <button @click="deleteAdRequest(adRequest.id)" class="button delete-button">Delete</button>
-                </div>
-                <div v-else-if="adRequest.status === 'Request Negotiated'">
-                  <button @click="acceptAdRequest(adRequest.id)" class="button accept-button">Accept</button>
-                  <button @click="rejectAdRequest(adRequest.id)" class="button reject-button">Reject</button>
-                </div>
+              <!-- Actions for Pending Requests -->
+              <td v-if="section.status === 'Request Sent'">
+                <button @click="redirectToEdit(adRequest.id)" class="button edit-button">Edit</button>
+                <button @click="deleteAdRequest(adRequest.id)" class="button delete-button">Delete</button>
+              </td>
+              <!-- Actions for Negotiated Requests -->
+              <td v-else-if="section.status === 'Request Negotiated'">
+                <button @click="acceptAdRequest(adRequest.id)" class="button accept-button">Accept</button>
+                <button @click="rejectAdRequest(adRequest.id)" class="button reject-button">Reject</button>
+              </td>
+              <!-- Actions for Requests Sent by Influencer -->
+              <td v-else-if="section.status === 'Request Sent by Influencer'">
+                <button @click="acceptInfluencerAdRequest(adRequest.id)" class="button accept-button">Accept</button>
+                <button @click="rejectInfluencerAdRequest(adRequest.id)" class="button reject-button">Reject</button>
               </td>
             </tr>
           </tbody>
@@ -70,6 +75,7 @@ export default {
     // Categorize ad requests based on status
     sections() {
       return [
+        { title: 'Requests Sent by Influencer', status: 'Request Sent by Influencer', requests: this.adRequests.filter(req => req.status === 'Request Sent by Influencer') },
         { title: 'New Negotiations', status: 'Request Negotiated', requests: this.adRequests.filter(req => req.status === 'Request Negotiated') },
         { title: 'Pending Requests', status: 'Request Sent', requests: this.adRequests.filter(req => req.status === 'Request Sent') },
         { title: 'Active Requests', status: 'Request Accepted', requests: this.adRequests.filter(req => req.status === 'Request Accepted') },
@@ -128,43 +134,89 @@ export default {
         })
         .catch(error => {
           console.error("Error deleting ad request:", error);
-          this.errorMessage = error.response.data.error || "Failed to delete ad request.";
+          this.errorMessage = error.response?.data?.error || "Failed to delete ad request.";
           this.successMessage = '';
         });
     },
+    // Accept negotiated ad request
     acceptAdRequest(adRequestId) {
       const token = localStorage.getItem('authToken');
+      const url = `http://127.0.0.1:5000/accept_negotiated_ad_request/${adRequestId}`;
       axios
-        .put(`http://127.0.0.1:5000/accept_negotiated_ad_request/${adRequestId}`, null, {
+        .put(url, null, {
           headers: { 'Authentication-Token': token }
         })
-        .then(() => {
-          this.successMessage = "Ad request accepted successfully!";
+        .then(response => {
+          this.successMessage = response.data.message || "Ad request accepted successfully!";
           this.errorMessage = '';
           this.fetchAdRequests(); // Refresh the requests to update status
         })
         .catch(error => {
           console.error("Error accepting ad request:", error);
-          this.errorMessage = error.response.data.error || "Failed to accept ad request.";
+          this.errorMessage = error.response?.data?.error || "Failed to accept ad request.";
           this.successMessage = '';
         });
     },
+    // Reject negotiated ad request
     rejectAdRequest(adRequestId) {
       const token = localStorage.getItem('authToken');
+      const url = `http://127.0.0.1:5000/reject_negotiated_ad_request/${adRequestId}`;
       axios
-        .put(`http://127.0.0.1:5000/reject_negotiated_ad_request/${adRequestId}`, null, {
+        .put(url, null, {
           headers: { 'Authentication-Token': token }
         })
-        .then(() => {
-          this.successMessage = "Ad request rejected successfully!";
+        .then(response => {
+          this.successMessage = response.data.message || "Ad request rejected successfully!";
           this.errorMessage = '';
           this.fetchAdRequests(); // Refresh the requests to update status
         })
         .catch(error => {
           console.error("Error rejecting ad request:", error);
-          this.errorMessage = error.response.data.error || "Failed to reject ad request.";
+          this.errorMessage = error.response?.data?.error || "Failed to reject ad request.";
           this.successMessage = '';
         });
+    },
+    // Accept ad request sent by influencer
+    acceptInfluencerAdRequest(adRequestId) {
+      const token = localStorage.getItem('authToken');
+      const url = `http://127.0.0.1:5000/accept_influencer_ad_request/${adRequestId}`;
+      axios
+        .put(url, null, {
+          headers: { 'Authentication-Token': token }
+        })
+        .then(response => {
+          this.successMessage = response.data.message || "Ad request accepted successfully!";
+          this.errorMessage = '';
+          this.fetchAdRequests(); // Refresh the requests to update status
+        })
+        .catch(error => {
+          console.error("Error accepting influencer ad request:", error);
+          this.errorMessage = error.response?.data?.error || "Failed to accept ad request.";
+          this.successMessage = '';
+        });
+    },
+    // Reject ad request sent by influencer
+    rejectInfluencerAdRequest(adRequestId) {
+      const token = localStorage.getItem('authToken');
+      const url = `http://127.0.0.1:5000/reject_influencer_ad_request/${adRequestId}`;
+      axios
+        .put(url, null, {
+          headers: { 'Authentication-Token': token }
+        })
+        .then(response => {
+          this.successMessage = response.data.message || "Ad request rejected successfully!";
+          this.errorMessage = '';
+          this.fetchAdRequests(); // Refresh the requests to update status
+        })
+        .catch(error => {
+          console.error("Error rejecting influencer ad request:", error);
+          this.errorMessage = error.response?.data?.error || "Failed to reject ad request.";
+          this.successMessage = '';
+        });
+    },
+    // Determine if the section should display action buttons
+    sectionHasActions(status) {
+      return status === 'Request Sent' || status === 'Request Negotiated' || status === 'Request Sent by Influencer';
     }
   }
 };
@@ -270,4 +322,5 @@ table td {
   margin-top: 10px;
   text-align: center;
 }
+
 </style>

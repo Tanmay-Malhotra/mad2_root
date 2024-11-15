@@ -62,20 +62,28 @@ api_handler.add_resource(DeleteAdRequest, '/campaign/delete_ad_request/<int:ad_r
 
 
 #API for sponsor to find influncers 
-from backend.routes.sponsor import FindInfluencers
+from backend.routes.sponsor import FindInfluencers,AcceptInfluencerAdRequest,RejectInfluencerAdRequest
 api_handler.add_resource(FindInfluencers, '/sponsor/inf_find')
+api_handler.add_resource(AcceptInfluencerAdRequest, '/accept_influencer_ad_request/<int:ad_request_id>')
+api_handler.add_resource(RejectInfluencerAdRequest, '/reject_influencer_ad_request/<int:ad_request_id>')
+
 
 
 #API for influencer to manage add request 
-from backend.routes.influencer import AcceptAdRequest,RejectAdRequest,NegotiateAdRequest,InfluencerAdRequestList
+from backend.routes.influencer import AcceptAdRequest,RejectAdRequest,NegotiateAdRequest,InfluencerAdRequestList,PublicCampaignList
 
 api_handler.add_resource(InfluencerAdRequestList, '/influencer/ad_requests/<int:influencer_id>')
 api_handler.add_resource(AcceptAdRequest, '/accept_ad_request/<int:ad_request_id>')
 api_handler.add_resource(RejectAdRequest, '/reject_ad_request/<int:ad_request_id>')
 api_handler.add_resource(NegotiateAdRequest, '/negotiate_ad_request/<int:ad_request_id>')
+api_handler.add_resource(PublicCampaignList, '/influencer/public_campaigns/<int:influencer_id>')
+
+from backend.routes.influencer import InfluencerInitiateAdRequest
+api_handler.add_resource(InfluencerInitiateAdRequest, '/influencer/campaign/ad_request/<int:campaign_id>')
 
 from backend.routes.sponsor import SponsorNegotiateAdRequest, AcceptNegotiatedAdRequest,RejectNegotiatedAdRequest
 
+# not sure if I need this sponsor negotiate ad request ??
 api_handler.add_resource(SponsorNegotiateAdRequest,'/sponsor/negotiate_ad_request/<int:ad_request_id>')
 api_handler.add_resource(AcceptNegotiatedAdRequest, '/accept_negotiated_ad_request/<int:ad_request_id>')
 api_handler.add_resource(RejectNegotiatedAdRequest, '/reject_negotiated_ad_request/<int:ad_request_id>')
