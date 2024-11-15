@@ -16,6 +16,8 @@
     <div class="content">
       <h1>Welcome, influencer</h1>
       <p>Your influence, empowered @ SPOC</p>
+      <!-- Edit Profile Button -->
+      <button class="button edit-profile" @click="editProfile">Edit Profile</button>
     </div>
   </div>
 </template>
@@ -37,6 +39,10 @@ export default {
       localStorage.removeItem('authToken');
       localStorage.removeItem('influencerId');  // Clear influencerId on logout
       this.$router.push('/');
+    },
+    editProfile() {
+      // Redirect to the Edit Profile page
+      this.$router.push('/influencer/edit-profile');
     }
   }
 };
@@ -120,5 +126,20 @@ h1 {
 p {
   font-size: 20px;
   color: #555;
+}
+
+.button.edit-profile {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.button.edit-profile:hover {
+  background-color: #2980b9;
 }
 </style>

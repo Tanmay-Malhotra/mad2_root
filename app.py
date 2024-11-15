@@ -78,6 +78,9 @@ api_handler.add_resource(RejectAdRequest, '/reject_ad_request/<int:ad_request_id
 api_handler.add_resource(NegotiateAdRequest, '/negotiate_ad_request/<int:ad_request_id>')
 api_handler.add_resource(PublicCampaignList, '/influencer/public_campaigns/<int:influencer_id>')
 
+from backend.routes.influencer import InfluencerEditProfile
+api_handler.add_resource(InfluencerEditProfile, '/edit_influencer_profile')
+
 from backend.routes.influencer import InfluencerInitiateAdRequest
 api_handler.add_resource(InfluencerInitiateAdRequest, '/influencer/campaign/ad_request/<int:campaign_id>')
 

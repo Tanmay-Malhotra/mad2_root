@@ -188,3 +188,42 @@ class InfluencerInitiateAdRequest(Resource):
 
         return make_response(jsonify({"message": "Ad request sent to sponsor successfully!"}), 201)
 
+from flask import request, jsonify, make_response
+from flask_restful import Resource
+from flask_security import auth_token_required, current_user
+from backend.models import db, InfluencerProfile
+
+class InfluencerEditProfile(Resource):
+    @auth_token_required
+    def put(self):
+        # Parse JSON request data
+        data = request.get_json()
+        new_name = data.get('name')
+        new_followers = data.get('followers')
+
+        # Validate input
+        if not new_name or not isinstance(new_name, str):
+            return make_response(jsonify({"error": "Invalid or missing 'name' field"}), 400)
+        if not isinstance(new_followers, int) or new_followers <= 0:
+            return make_response(jsonify({"error": "Invalid 'followers' count"}), 400)
+
+        # Retrieve influencer profile for the current user
+        influencer_profile = InfluencerProfile.query.filter_by(user_id=current_user.id).first()
+        if not influencer_profile:
+            return make_response(jsonify({"error": "User is not an influencer"}), 403)
+
+        # Update profile details
+        influencer_profile.name = new_name
+        influencer_profile.followers = new_followers
+
+        # Commit changes to the database
+        try:
+            db.session.commit()
+            return make_response(jsonify({
+                "message": "Profile updated successfully",
+                "name": influencer_profile.name,
+                "followers": influencer_profile.followers
+            }), 200)
+        except Exception as e:
+            db.session.rollback()
+            return make_response(jsonify({"error": f"Database error: {str(e)}"}), 500)
