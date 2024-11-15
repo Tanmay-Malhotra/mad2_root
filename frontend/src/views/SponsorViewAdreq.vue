@@ -18,7 +18,7 @@
               <th>Requirements</th>
               <th>Payment Amount</th>
               <th>Status</th>
-              <th>Action</th>
+              <th v-if="section.status === 'Request Accepted' || section.status === 'Request Negotiated'">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -27,7 +27,7 @@
               <td>{{ adRequest.requirements }}</td>
               <td>${{ adRequest.payment_amount }}</td>
               <td>{{ adRequest.status }}</td>
-              <td>
+              <td v-if="adRequest.status === 'Request Accepted'">
                 <button @click="redirectToEdit(adRequest.id)" class="button edit-button">Edit</button>
                 <button @click="deleteAdRequest(adRequest.id)" class="button delete-button">Delete</button>
               </td>

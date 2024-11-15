@@ -121,21 +121,10 @@ export default {
       });
     },
     negotiateAdRequest(adRequest) {
-      const token = localStorage.getItem('authToken');
-      const updatedData = {
-        requirements: adRequest.requirements,
-        payment_amount: adRequest.payment_amount,
-      };
-      axios.put(`http://127.0.0.1:5000/negotiate_ad_request/${adRequest.id}`, updatedData, {
-        headers: { 'Authentication-Token': token }
-      })
-      .then(() => {
-        adRequest.status = "Request Negotiated";
-        alert("Ad request negotiated successfully!");
-      })
-      .catch(error => {
-        console.error("Error negotiating ad request:", error);
-        alert(error.response.data.error || "Failed to negotiate ad request.");
+      // Redirect to the negotiate page with adRequestId
+      this.$router.push({ 
+        name: 'InfluencerNegotiateAdRequest', 
+        params: { adRequestId: adRequest.id } 
       });
     },
     logout() {

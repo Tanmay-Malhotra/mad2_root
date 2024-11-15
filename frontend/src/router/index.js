@@ -14,8 +14,9 @@ import InfluencerSignup from '../views/InfluencerSignup.vue';
 import SponsorSignup from '../views/SponsorSignup.vue';
 import SponsorFindInf from '../views/SponsorFindinf.vue';
 import SendAdRequest from '../views/SponsorSendAdreq.vue';
-import SponsorUpdateadreq from '../views/SponsorUpdateadreq.vue'; // Import the SponsorUpdateadreq component
-import InfluencerAdreq from '../views/InfluencerAdreq.vue'; // Import the InfluencerAdreq component
+import SponsorUpdateadreq from '../views/SponsorUpdateadreq.vue';
+import InfluencerAdreq from '../views/InfluencerAdreq.vue';
+import InfluencerNegotiateAdreq from '../views/InfluencerNegotiateAdreq.vue'; // Import the negotiation component
 
 const routes = [
   { path: '/', name: 'home', component: SignIn },
@@ -32,24 +33,30 @@ const routes = [
   { path: '/register-influencer', name: 'InfluencerSignup', component: InfluencerSignup },
   { path: '/register-sponsor', name: 'SponsorSignup', component: SponsorSignup },
   { path: '/find-influencers', name: 'SponsorFindInf', component: SponsorFindInf },
-  { 
-    path: '/send-ad-request/:influencerId', 
-    name: 'SponsorSendAdreq', 
-    component: SendAdRequest, 
-    props: route => ({ influencerId: parseInt(route.params.influencerId), influencerName: route.query.name }) 
+  {
+    path: '/send-ad-request/:influencerId',
+    name: 'SponsorSendAdreq',
+    component: SendAdRequest,
+    props: route => ({ influencerId: parseInt(route.params.influencerId), influencerName: route.query.name })
   },
-  { 
-    path: '/edit-ad-request/:campaignId/:adRequestId', 
-    name: 'SponsorUpdateadreq', 
-    component: SponsorUpdateadreq, 
-    props: true 
-  }, // Route for updating an ad request with both campaignId and adRequestId as props
-  { 
-    path: '/influencer/ad-requests/:influencerId', 
-    name: 'InfluencerAdreq', 
-    component: InfluencerAdreq, 
-    props: true 
-  } // Route for viewing all ad requests for a specific influencer
+  {
+    path: '/edit-ad-request/:campaignId/:adRequestId',
+    name: 'SponsorUpdateadreq',
+    component: SponsorUpdateadreq,
+    props: true
+  },
+  {
+    path: '/influencer/ad-requests/:influencerId',
+    name: 'InfluencerAdreq',
+    component: InfluencerAdreq,
+    props: true
+  },
+  {
+    path: '/influencer/negotiate-ad-request/:adRequestId',
+    name: 'InfluencerNegotiateAdRequest',
+    component: InfluencerNegotiateAdreq, // Use the imported component here
+    props: true
+  }
 ];
 
 const router = createRouter({
