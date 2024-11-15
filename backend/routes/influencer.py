@@ -4,6 +4,37 @@ from flask_restful import Resource
 from flask_security import auth_token_required, current_user
 from backend.models import db, AdRequest
 
+from flask import jsonify, make_response
+from flask_restful import Resource
+from flask_security import auth_token_required, current_user
+from backend.models import AdRequest, InfluencerProfile
+
+class InfluencerAdRequestList(Resource):
+    @auth_token_required
+    def get(self, influencer_id):
+        # Verify that the current user is the owner of this profile
+        influencer_profile = InfluencerProfile.query.filter_by(id=influencer_id, user_id=current_user.id).first()
+        if not influencer_profile:
+            return make_response(jsonify({"error": "Unauthorized access or influencer profile not found"}), 403)
+
+        # Fetch ad requests related to this influencer
+        ad_requests = AdRequest.query.filter_by(influencer_profile_id=influencer_id).all()
+        
+        # Serialize ad request data
+        ad_requests_data = [
+            {
+                "id": ad_request.id,
+                "campaign_name": ad_request.campaign.name,
+                "requirements": ad_request.requirements,
+                "payment_amount": ad_request.payment_amount,
+                "status": ad_request.status
+            }
+            for ad_request in ad_requests
+        ]
+
+        return make_response(jsonify({"ad_requests": ad_requests_data}), 200)
+
+
 class AcceptAdRequest(Resource):
     @auth_token_required
     def put(self, ad_request_id):

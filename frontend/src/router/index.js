@@ -15,6 +15,7 @@ import SponsorSignup from '../views/SponsorSignup.vue';
 import SponsorFindInf from '../views/SponsorFindinf.vue';
 import SendAdRequest from '../views/SponsorSendAdreq.vue';
 import SponsorUpdateadreq from '../views/SponsorUpdateadreq.vue'; // Import the SponsorUpdateadreq component
+import InfluencerAdreq from '../views/InfluencerAdreq.vue'; // Import the InfluencerAdreq component
 
 const routes = [
   { path: '/', name: 'home', component: SignIn },
@@ -42,7 +43,13 @@ const routes = [
     name: 'SponsorUpdateadreq', 
     component: SponsorUpdateadreq, 
     props: true 
-  } // Route for updating an ad request with both campaignId and adRequestId as props
+  }, // Route for updating an ad request with both campaignId and adRequestId as props
+  { 
+    path: '/influencer/ad-requests/:influencerId', 
+    name: 'InfluencerAdreq', 
+    component: InfluencerAdreq, 
+    props: true 
+  } // Route for viewing all ad requests for a specific influencer
 ];
 
 const router = createRouter({

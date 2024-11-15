@@ -61,6 +61,7 @@ export default {
           headers: { 'Authentication-Token': token }
         })
         .then(response => {
+          console.log('Fetched campaigns:', response.data.campaigns);
           this.campaigns = response.data.campaigns;
         })
         .catch(error => {

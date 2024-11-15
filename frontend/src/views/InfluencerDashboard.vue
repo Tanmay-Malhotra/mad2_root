@@ -5,7 +5,8 @@
       <div class="navbar-brand">Influencer @ SPOC</div>
       <div class="user-actions">
         <router-link to="/influencer-dashboard" class="nav-link">Profile</router-link>
-        <router-link to="/ad-management" class="nav-link">Ad Management</router-link>
+        <!-- Dynamic Ad Management Link with influencerId -->
+        <router-link :to="`/influencer/ad-requests/${influencerId}`" class="nav-link">Ad Management</router-link>
         <router-link to="/find" class="nav-link">Find</router-link>
         <button class="button logout" @click="logout">Logout</button>
       </div>
@@ -22,9 +23,19 @@
 <script>
 export default {
   name: 'InfluencerDashboard',
+  data() {
+    return {
+      influencerId: null  // Initialize influencerId
+    };
+  },
+  created() {
+    // Retrieve influencerId from localStorage
+    this.influencerId = localStorage.getItem('influencerId');
+  },
   methods: {
     logout() {
       localStorage.removeItem('authToken');
+      localStorage.removeItem('influencerId');  // Clear influencerId on logout
       this.$router.push('/');
     }
   }

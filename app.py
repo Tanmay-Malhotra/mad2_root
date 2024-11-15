@@ -67,8 +67,9 @@ api_handler.add_resource(FindInfluencers, '/sponsor/inf_find')
 
 
 #API for influencer to manage add request 
-from backend.routes.influencer import AcceptAdRequest,RejectAdRequest,NegotiateAdRequest
+from backend.routes.influencer import AcceptAdRequest,RejectAdRequest,NegotiateAdRequest,InfluencerAdRequestList
 
+api_handler.add_resource(InfluencerAdRequestList, '/influencer/ad_requests/<int:influencer_id>')
 api_handler.add_resource(AcceptAdRequest, '/accept_ad_request/<int:ad_request_id>')
 api_handler.add_resource(RejectAdRequest, '/reject_ad_request/<int:ad_request_id>')
 api_handler.add_resource(NegotiateAdRequest, '/negotiate_ad_request/<int:ad_request_id>')
