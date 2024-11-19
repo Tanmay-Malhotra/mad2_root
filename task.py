@@ -1,3 +1,4 @@
+
 from celery import shared_task
 from backend.models import Role, User, AdRequest
 from send_mail import send_email
@@ -59,34 +60,51 @@ def monthly_reminder(self):
 @shared_task(bind=True)
 def daily_reminder(self):
     try:
-        # Fetch influencers with pending ad requests
-        pending_users = User.query.join(AdRequest, User.influencer_profile.has()).filter(
-            AdRequest.status == 'Request Sent',
-            User.user_type == 'influencer'
-        ).all()
+        # Fetch all influencers
+        influencers = User.query.filter(User.user_type == 'influencer').all()
 
-        if not pending_users:
-            current_app.logger.info("No pending ad requests for influencers today")
-            return "No pending ad requests for influencers today"
+        if not influencers:
+            current_app.logger.info("No influencers found in the database.")
+            return "No influencers found in the database."
 
-        for user in pending_users:
-            send_notification(user.email, user.influencer_profile.name)
+        for influencer in influencers:
+            # Check if this influencer has pending ad requests
+            pending_ad_requests = AdRequest.query.filter_by(
+                influencer_profile_id=influencer.influencer_profile.id,
+                status='Request Sent'
+            ).all()
 
-        return "Notifications sent to influencers successfully"
+            # Message based on pending requests
+            if pending_ad_requests:
+                message = (
+                    f"Hello {influencer.influencer_profile.name}, "
+                    f"You have {len(pending_ad_requests)} pending ad requests. "
+                    "Please log in to your account and respond to them."
+                )
+            else:
+                message = (
+                    f"Hello {influencer.influencer_profile.name}, "
+                    "You have no pending ad requests at the moment. "
+                    "Check out public ad requests for new opportunities!"
+                )
+
+            # Send the notification
+            send_notification(message)
+            logger.info(f"Notification sent to influencer")
+
+        return "Daily reminders sent to all influencers successfully."
     except Exception as e:
         current_app.logger.error(f"Error in daily_reminder task: {str(e)}")
         return f"Error in daily_reminder task: {str(e)}"
 
 # ------------------------- Send Notification -------------------------
-def send_notification(email, username):
+""" def send_notification(email, message):
     try:
-        webhook_url = current_app.config.get('GOOGLE_CHAT_WEBHOOK_URL')
+        webhook_url = current_app.config.get('https://chat.googleapis.com/v1/spaces/AAAA3x4WEOQ/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=xVyXbbh2sn--sHugovpCi8TVpIPcMMP7hB6jp4be_Cw')
         if not webhook_url:
             raise ValueError("Google Chat webhook URL is not configured")
 
-        app_message = {
-            "text": f"Hello {username}! You have pending ad requests. Please check your account."
-        }
+        app_message = {"text": message}
         message_headers = {"Content-Type": "application/json; charset=UTF-8"}
         http_obj = Http()
 
@@ -98,14 +116,32 @@ def send_notification(email, username):
         )
 
         if response.status == 200:
-            logger.info(f"Notification sent to {username}")
+            logger.info(f"Notification sent to {email}")
         else:
-            logger.error(f"Failed to send notification to {username}: {content}")
+            logger.error(f"Failed to send notification to {email}: {content}")
 
         return response.status
     except Exception as e:
         logger.error(f"Error in send_notification: {str(e)}")
-        return f"Error in send_notification: {str(e)}"
+        return f"Error in send_notification: {str(e)}" """
+
+def send_notification(message):
+    try:
+        #this is the google chat webhook url
+        url = "https://chat.googleapis.com/v1/spaces/AAAA3x4WEOQ/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=xVyXbbh2sn--sHugovpCi8TVpIPcMMP7hB6jp4be_Cw"
+        app_message = {"text": message}
+        message_headers = {"Content-Type": "application/json; charset=UTF-8"}
+        http_obj = Http()
+        response = http_obj.request(
+            uri=url,
+            method="POST",
+            headers=message_headers,
+            body=dumps(app_message),
+        )
+        return f"Notification sent to influencer"
+    except Exception as e:
+        print(f"Error in send_notification task: {e}")
+        return f"Error in send_notification task: {e}"
 
 
 """ (proj) tan@DESKTOP-N1K8ALE:~/root_mad2$ redis-cli
