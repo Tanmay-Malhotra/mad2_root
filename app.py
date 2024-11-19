@@ -4,7 +4,10 @@ from flask_restful import Api
 from flask_cors import CORS
 from backend.models import db, User, Role  # Ensure these imports are correct
 from backend.routes.auth import Signin, InfluencerSignup, SponsorSignup
-
+from backend.worker import celery_init_app
+from celery.schedules import crontab
+from backend.task import monthly_reminder,daily_reminder
+from backend.mail_config import Config
 
 def createApp():
     app = Flask(__name__)
@@ -12,7 +15,7 @@ def createApp():
     # Load configuration
     from backend.config import LocalDevelopmentConfig
     app.config.from_object(LocalDevelopmentConfig)
-    
+    app.config.from_object(Config)
     # Initialize database
     db.init_app(app)
     
@@ -26,8 +29,20 @@ def createApp():
 
     return app, api
 
+
+
 # Create the app and API handler
 app, api_handler = createApp()
+celery_app = celery_init_app(app)
+
+@celery_app.on_after_configure.connect
+def celery_job(sender, **kwargs):
+    # sender.add_periodic_task(crontab(hour=8, minute=0, day_of_month=1), monthly_reminder.s())
+    # sender.add_periodic_task(crontab(hour=18, minute=0), daily_reminder.s())
+
+    # for testing
+    sender.add_periodic_task(60, monthly_reminder.s())
+    sender.add_periodic_task(10, daily_reminder.s())
 
 # Example of a protected route using Flask-Security
 @app.get('/protected')
