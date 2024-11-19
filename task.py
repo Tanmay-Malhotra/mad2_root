@@ -41,7 +41,7 @@ def monthly_reminder(self):
 
         # Send the email
         send_email(
-            admin.email,
+            "malhotratanmay04@gmail.com",
             "Monthly Report",
             template.render(
                 total_users=total_users,
@@ -98,33 +98,6 @@ def daily_reminder(self):
         return f"Error in daily_reminder task: {str(e)}"
 
 # ------------------------- Send Notification -------------------------
-""" def send_notification(email, message):
-    try:
-        webhook_url = current_app.config.get('https://chat.googleapis.com/v1/spaces/AAAA3x4WEOQ/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=xVyXbbh2sn--sHugovpCi8TVpIPcMMP7hB6jp4be_Cw')
-        if not webhook_url:
-            raise ValueError("Google Chat webhook URL is not configured")
-
-        app_message = {"text": message}
-        message_headers = {"Content-Type": "application/json; charset=UTF-8"}
-        http_obj = Http()
-
-        response, content = http_obj.request(
-            uri=webhook_url,
-            method="POST",
-            headers=message_headers,
-            body=dumps(app_message),
-        )
-
-        if response.status == 200:
-            logger.info(f"Notification sent to {email}")
-        else:
-            logger.error(f"Failed to send notification to {email}: {content}")
-
-        return response.status
-    except Exception as e:
-        logger.error(f"Error in send_notification: {str(e)}")
-        return f"Error in send_notification: {str(e)}" """
-
 def send_notification(message):
     try:
         #this is the google chat webhook url

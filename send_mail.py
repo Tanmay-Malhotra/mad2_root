@@ -1,6 +1,6 @@
 from time import sleep
 from flask_mail import Message
-from backend.mail import mail
+from mail import mail
 import smtplib
 from flask import current_app
 

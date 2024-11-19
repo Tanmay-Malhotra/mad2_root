@@ -9,6 +9,7 @@ from celery.schedules import crontab
 from task import monthly_reminder,daily_reminder
 from mail_config import Config
 
+from mail import mail
 def createApp():
     app = Flask(__name__)
     
@@ -26,6 +27,8 @@ def createApp():
     # Initialize API and CORS
     api = Api(app)
     CORS(app)
+
+    mail.init_app(app)
 
     return app, api
 
