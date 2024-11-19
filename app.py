@@ -4,16 +4,16 @@ from flask_restful import Api
 from flask_cors import CORS
 from backend.models import db, User, Role  # Ensure these imports are correct
 from backend.routes.auth import Signin, InfluencerSignup, SponsorSignup
-from backend.worker import celery_init_app
+from worker import celery_init_app
 from celery.schedules import crontab
-from backend.task import monthly_reminder,daily_reminder
-from backend.mail_config import Config
+from task import monthly_reminder,daily_reminder
+from mail_config import Config
 
 def createApp():
     app = Flask(__name__)
     
     # Load configuration
-    from backend.config import LocalDevelopmentConfig
+    from config import LocalDevelopmentConfig
     app.config.from_object(LocalDevelopmentConfig)
     app.config.from_object(Config)
     # Initialize database
