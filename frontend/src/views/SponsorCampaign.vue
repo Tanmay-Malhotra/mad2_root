@@ -15,7 +15,10 @@
     <div class="content">
       <div class="header">
         <h1>Your Campaigns</h1>
-        <button @click="navigateToCreateCampaign" class="button create-button">Create New Campaign</button>
+        <div class="button-group">
+          <button @click="exportCampaigns" class="button export-button">Export Campaigns CSV</button>
+          <button @click="navigateToCreateCampaign" class="button create-button">Create New Campaign</button>
+        </div>
       </div>
       <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
       <div v-if="campaigns.length">
@@ -92,6 +95,28 @@ export default {
           console.error("Error deleting campaign:", error);
         });
     },
+    exportCampaigns() {
+      const token = localStorage.getItem('authToken');
+      axios
+        .get('http://127.0.0.1:5000/export-campaigns-csv', {
+          headers: { 'Authentication-Token': token },
+          responseType: 'blob'
+        })
+        .then(response => {
+          const blob = new Blob([response.data], { type: 'text/csv' });
+          const link = document.createElement('a');
+          const url = window.URL.createObjectURL(blob);
+          link.href = url;
+          link.setAttribute('download', 'campaigns.csv');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+          console.error('Error exporting campaigns:', error);
+        });
+    },
     logout() {
       localStorage.removeItem('authToken');
       this.$router.push('/');
@@ -122,10 +147,6 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }
 
 .navbar-brand {
@@ -159,7 +180,6 @@ header {
   cursor: pointer;
 }
 
-/* Page content styling */
 .content {
   padding: 20px;
 }
@@ -169,6 +189,19 @@ header {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.button-group {
+  display: flex;
+  align-items: center;
+}
+
+.button-group .button {
+  margin-left: 10px;
+}
+
+.button-group .button:first-child {
+  margin-left: 0;
 }
 
 h1 {
@@ -186,8 +219,18 @@ h1 {
   font-size: 1em;
 }
 
+.export-button {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
 .success-message {
-  color: red;
+  color: green;
   font-weight: bold;
   margin-bottom: 10px;
 }

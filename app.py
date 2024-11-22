@@ -136,6 +136,9 @@ api_handler.add_resource(AdminDeleteInfluencerView, '/admin/influencer/delete/<i
 api_handler.add_resource(AdminDeleteCampaignView, '/admin/campaign/delete/<int:campaign_id>')
 api_handler.add_resource(AdminDeleteAdRequestView, '/admin/ad_request/delete/<int:ad_request_id>')
 
+from backend.routes.export import export_bp
+app.register_blueprint(export_bp)
+
 
 if __name__ == '__main__':
     app.run()
