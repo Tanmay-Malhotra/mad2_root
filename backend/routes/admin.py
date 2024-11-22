@@ -2,10 +2,12 @@ from flask import request, jsonify, make_response, session
 from flask_restful import Resource
 from flask_security import auth_token_required, roles_accepted
 from backend.models import db, User, Role, SponsorProfile, InfluencerProfile, Campaign, AdRequest
+from cache import cache
 
 class AdminDashboardView(Resource):
     @auth_token_required
     @roles_accepted('admin')
+    @cache.cached(timeout=20)
     def get(self):
         # Fetch statistics
         total_users = SponsorProfile.query.count() + InfluencerProfile.query.count()

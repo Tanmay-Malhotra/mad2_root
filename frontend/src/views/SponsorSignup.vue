@@ -8,6 +8,7 @@
       <input type="email" v-model="email" placeholder="Email" required />
       <select v-model="industry" required>
         <option disabled value="">Select Industry</option>
+        <option>Technology</option>
         <option>Finance</option>
         <option>Healthcare</option>
         <option>Automotive</option>

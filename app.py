@@ -8,6 +8,7 @@ from worker import celery_init_app
 from celery.schedules import crontab
 from task import monthly_reminder,daily_reminder
 from mail_config import Config
+from cache import cache
 
 from mail import mail
 def createApp():
@@ -30,6 +31,8 @@ def createApp():
 
     mail.init_app(app)
 
+    cache.init_app(app)
+    
     return app, api
 
 
