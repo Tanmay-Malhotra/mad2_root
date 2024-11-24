@@ -1,6 +1,6 @@
 <template>
   <div class="admin-dashboard">
-    <!-- Navigation Bar -->
+    
     <header class="navbar">
       <div class="navbar-brand">SPOC Administrator</div>
       <div class="navbar-links">
@@ -12,7 +12,7 @@
       </div>
     </header>
 
-    <!-- Content Section -->
+    
     <h1>Welcome, Admin</h1>
     <h2>Manage SPOC</h2>
     <div class="stats-cards">
@@ -104,7 +104,7 @@ body {
   margin: 0;
 }
 
-/* Navbar styling */
+
 .navbar {
   background-color: #333;
   color: white;

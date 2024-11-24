@@ -106,7 +106,7 @@ export default {
             'Authentication-Token': token
           }
         })
-        .then(() => { // Removed 'response' here to fix the ESLint error
+        .then(() => { 
           this.influencers = this.influencers.filter(influencer => influencer.id !== influencerId);
         })
         .catch(error => {
@@ -123,7 +123,7 @@ export default {
 </script>
 
 <style scoped>
-/* Navbar styling */
+
 .navbar {
   background-color: #333;
   color: white;

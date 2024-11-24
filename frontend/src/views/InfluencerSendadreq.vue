@@ -1,25 +1,25 @@
 <template>
   <div class="send-ad-request">
-    <!-- Header with Title and Go Back Button -->
+   
     <div class="header">
       <h1>Send Ad Request to Sponsor for {{ campaignName }}</h1>
       <button @click="goBack" class="button go-back-button">Go Back</button>
     </div>
 
     <form @submit.prevent="submitAdRequest">
-      <!-- Requirements Textarea -->
+      
       <div class="form-group">
         <label for="requirements">Requirements:</label>
         <textarea v-model="requirements" rows="4" required></textarea>
       </div>
 
-      <!-- Payment Amount Input -->
+     
       <div class="form-group">
         <label for="payment_amount">Payment Amount:</label>
         <input type="number" v-model="payment_amount" required />
       </div>
 
-      <!-- Submit Button -->
+
       <button type="submit" class="button send-request-button">Send Ad Request</button>
 
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
@@ -41,7 +41,7 @@ export default {
     };
   },
   methods: {
-    // Submit the ad request to the sponsor
+    
     submitAdRequest() {
     const token = localStorage.getItem('authToken');
     axios
@@ -53,8 +53,8 @@ export default {
       })
       // eslint-disable-next-line
       .then(response => {
-        alert("Ad request sent to sponsor successfully!"); // Display success message
-        // Redirect to the public campaigns page with influencerId
+        alert("Ad request sent to sponsor successfully!");
+        
         this.$router.push({ name: 'InfluencerFindCampaigns', params: { influencerId: this.influencerId } });
       })
       .catch(error => {
@@ -62,7 +62,7 @@ export default {
         this.errorMessage = error.response.data.error || "Failed to send ad request.";
       });
     },
-  // Navigate back to the Public Campaigns page
+  
     goBack() {
         this.$router.push({ name: 'InfluencerFindCampaigns', params: { influencerId: this.influencerId } });
     }

@@ -12,7 +12,7 @@
     </header>
     <h1>Sponsors</h1>
 
-    <!-- Approved Sponsors Table -->
+   
     <div class="table-container">
       <h2>Approved Sponsors</h2>
       <table class="sponsor-table">
@@ -40,7 +40,6 @@
       </table>
     </div>
 
-    <!-- New Sponsor Requests Table -->
     <div class="table-container">
       <h2>New Sponsor Requests</h2>
       <table class="sponsor-table">
@@ -95,7 +94,7 @@ export default {
           headers: { 'Authentication-Token': token }
         })
         .then(response => {
-          // Separating approved sponsors and pending requests based on 'approved' field
+          
           this.approvedSponsors = response.data.sponsors.filter(sponsor => sponsor.approved === true);
           this.newSponsorRequests = response.data.sponsors.filter(sponsor => sponsor.approved === false);
         })
@@ -160,7 +159,7 @@ export default {
 </script>
 
 <style scoped>
-/* Navbar styling */
+
 .navbar {
   background-color: #333;
   color: white;

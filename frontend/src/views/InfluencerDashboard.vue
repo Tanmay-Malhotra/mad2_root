@@ -1,22 +1,18 @@
 <template>
   <div>
-    <!-- Navigation Bar -->
     <header>
       <div class="navbar-brand">Influencer @ SPOC</div>
       <div class="user-actions">
         <router-link to="/influencer-dashboard" class="nav-link">Profile</router-link>
-        <!-- Dynamic Ad Management Link with influencerId -->
         <router-link :to="`/influencer/ad-requests/${influencerId}`" class="nav-link">Ad Management</router-link>
         <router-link :to="`/public-campaigns/${influencerId}`" class="nav-link">Find Campaigns</router-link>
         <button class="button logout" @click="logout">Logout</button>
       </div>
     </header>
     
-    <!-- Content Section -->
     <div class="content">
       <h1>Welcome, influencer</h1>
       <p>Your influence, empowered @ SPOC</p>
-      <!-- Edit Profile Button -->
       <button class="button edit-profile" @click="editProfile">Edit Profile</button>
     </div>
   </div>
@@ -27,21 +23,20 @@ export default {
   name: 'InfluencerDashboard',
   data() {
     return {
-      influencerId: null  // Initialize influencerId
+      influencerId: null 
     };
   },
   created() {
-    // Retrieve influencerId from localStorage
+
     this.influencerId = localStorage.getItem('influencerId');
   },
   methods: {
     logout() {
       localStorage.removeItem('authToken');
-      localStorage.removeItem('influencerId');  // Clear influencerId on logout
+      localStorage.removeItem('influencerId');  
       this.$router.push('/');
     },
     editProfile() {
-      // Redirect to the Edit Profile page
       this.$router.push('/influencer/edit-profile');
     }
   }
@@ -112,7 +107,7 @@ header {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 80px); /* Adjusts for header height */
+  height: calc(100vh - 80px); 
   text-align: center;
 }
 

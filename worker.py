@@ -9,13 +9,10 @@ def celery_init_app(app: Flask) -> Celery:
 
     celery_app = Celery(app.name, task_cls=FlaskTask)
     
-    # Configure Celery
     celery_app.config_from_object("celery_config")
     
-    # Store the Flask app on the Celery app
     celery_app.flask_app = app
     
-    # Update all tasks to use the Flask task base
     celery_app.Task = FlaskTask
     
     return celery_app

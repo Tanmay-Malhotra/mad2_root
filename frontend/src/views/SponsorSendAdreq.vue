@@ -1,13 +1,13 @@
 <template>
   <div class="send-ad-request">
-    <!-- Header with Title and Go Back Button -->
+    
     <div class="header">
       <h1>Send Ad Request to {{ influencerName }}</h1>
       <button @click="goBack" class="button go-back-button">Go Back</button>
     </div>
 
     <form @submit.prevent="submitAdRequest">
-      <!-- Select Campaign Dropdown -->
+
       <div class="form-group">
         <label for="campaign">Select Campaign:</label>
         <select v-model="campaign_id" required>
@@ -15,19 +15,19 @@
         </select>
       </div>
 
-      <!-- Requirements Textarea -->
+
       <div class="form-group">
         <label for="requirements">Requirements:</label>
         <textarea v-model="requirements" rows="4" required></textarea>
       </div>
 
-      <!-- Payment Amount Input -->
+
       <div class="form-group">
         <label for="payment_amount">Payment Amount:</label>
         <input type="number" v-model="payment_amount" required />
       </div>
 
-      <!-- Submit Button -->
+
       <button type="submit" class="button send-request-button">Send Ad Request</button>
 
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
@@ -54,7 +54,7 @@ export default {
     this.fetchCampaigns();
   },
   methods: {
-    // Fetch available campaigns for the sponsor
+
     fetchCampaigns() {
       const token = localStorage.getItem('authToken');
       const sponsorId = localStorage.getItem('sponsorId');
@@ -70,7 +70,7 @@ export default {
           this.errorMessage = "Error fetching campaigns.";
         });
     },
-    // Submit the ad request to the selected influencer
+    
     submitAdRequest() {
       const token = localStorage.getItem('authToken');
       axios
@@ -83,15 +83,15 @@ export default {
         })
         // eslint-disable-next-line
         .then(response => {
-          alert("Ad request sent successfully!"); // Display success message
-          this.$router.push('/find-influencers'); // Redirect to Find Influencers page
+          alert("Ad request sent successfully!"); 
+          this.$router.push('/find-influencers'); 
         })
         .catch(error => {
           console.error("Error sending ad request:", error);
           this.errorMessage = error.response.data.error || "Failed to send ad request.";
         });
     },
-    // Navigate back to the Find Influencers page
+    
     goBack() {
       this.$router.push('/find-influencers');
     }

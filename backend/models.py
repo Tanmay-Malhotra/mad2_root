@@ -12,10 +12,8 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean, default=True)
     roles = db.relationship('Role', backref='bearers', secondary='user_roles')
 
-    # New field to differentiate user types
-    user_type = db.Column(db.String(20), nullable=False)  # Can be 'sponsor' or 'influencer'
+    user_type = db.Column(db.String(20), nullable=False)  
 
-    # Relationships to specific profiles
     sponsor_profile = db.relationship('SponsorProfile', uselist=False, backref='user')
     influencer_profile = db.relationship('InfluencerProfile', uselist=False, backref='user')
 
@@ -33,24 +31,23 @@ user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
 class SponsorProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Link to User table
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  
     name = db.Column(db.String(100), nullable=True)
     industry = db.Column(db.String(100))
     flagged = db.Column(db.String(10), nullable=False, default="no")
     approved = db.Column(db.Boolean, default=False)
-    # Relationship with campaigns
+    
     campaigns = db.relationship('Campaign', backref='sponsor_profile', lazy=True)
 
 class InfluencerProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Link to User table
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  
     name = db.Column(db.String(100), nullable=True)
     industry = db.Column(db.String(100), nullable=False)
     platform = db.Column(db.String(100))
     flagged = db.Column(db.String(10), nullable=False, default="no")
     followers = db.Column(db.Integer, nullable=False)
 
-    # Relationship with ad requests
     ad_requests = db.relationship('AdRequest', backref='influencer_profile', lazy=True)
 
 class Campaign(db.Model):
@@ -63,10 +60,9 @@ class Campaign(db.Model):
     flagged = db.Column(db.String(10), nullable=False, default="no")
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=True)
-    # add public/private campaign and respective functionality
+
     type = db.Column(db.String(10), nullable=False, default="private")
 
-    # Relationship with ad requests
     ad_requests = db.relationship('AdRequest', backref='campaign', lazy=True)
 
 class AdRequest(db.Model):

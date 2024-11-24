@@ -19,7 +19,7 @@ import InfluencerAdreq from '../views/InfluencerAdreq.vue';
 import InfluencerNegotiateAdreq from '../views/InfluencerNegotiateAdreq.vue';
 import InfluencerFindCampaigns from '../views/InfluencerFindCampaign.vue';
 import InfluencerSendAdRequest from '../views/InfluencerSendadreq.vue';
-import InfluencerEditProfile from '../views/InfluencerEditProfile.vue'; // Import InfluencerEditProfile
+import InfluencerEditProfile from '../views/InfluencerEditProfile.vue'; 
 
 const routes = [
   { path: '/', name: 'home', component: SignIn },
@@ -64,7 +64,7 @@ const routes = [
     path: '/public-campaigns/:influencerId',
     name: 'InfluencerFindCampaigns',
     component: InfluencerFindCampaigns,
-    props: true  // This passes `influencerId` as a prop to the component
+    props: true  
   },
   {
     path: '/influencer/send-ad-request/:campaignId',

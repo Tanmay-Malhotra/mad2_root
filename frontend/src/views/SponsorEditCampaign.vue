@@ -50,7 +50,7 @@ export default {
       budget: '',
       start_date: '',
       end_date: '',
-      type: '', // Add type data property
+      type: '', 
       successMessage: ''
     };
   },
@@ -71,7 +71,7 @@ export default {
           this.budget = campaign.budget;
           this.start_date = campaign.start_date;
           this.end_date = campaign.end_date;
-          this.type = campaign.type; // Set type data
+          this.type = campaign.type; 
         })
         .catch(error => {
           console.error("Error fetching campaign details:", error);
@@ -85,7 +85,7 @@ export default {
         budget: this.budget,
         start_date: this.start_date,
         end_date: this.end_date,
-        type: this.type // Include type in update data
+        type: this.type 
       };
       axios
         .put(`http://127.0.0.1:5000/edit_campaign/${this.campaignId}`, data, {

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Navigation Bar -->
     <header>
       <div class="navbar-brand">Influencer @ SPOC</div>
       <div class="user-actions">
@@ -11,7 +10,6 @@
       </div>
     </header>
 
-    <!-- Public Campaigns List Section -->
     <div class="campaigns-list">
       <h1>Find Campaigns</h1>
       <div class="search-bar">
@@ -60,7 +58,7 @@ export default {
     return {
       searchQuery: '',
       campaigns: [],
-      influencerId: localStorage.getItem('influencerId') // Get influencer ID from localStorage
+      influencerId: localStorage.getItem('influencerId') 
     };
   },
   computed: {
@@ -90,7 +88,7 @@ export default {
         });
     },
     sendAdRequest(campaignId, campaignName) {
-    // Navigate to the InfluencerSendAdRequest page with campaignId, campaignName, and influencerId
+    
     this.$router.push({
       name: 'InfluencerSendAdRequest',
       params: { campaignId: campaignId },
@@ -105,7 +103,7 @@ export default {
 </script>
 
 <style scoped>
-/* Navbar Styles */
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
 * {
@@ -164,7 +162,6 @@ header {
   cursor: pointer;
 }
 
-/* Campaign List Styles */
 .campaigns-list {
   max-width: 800px;
   margin: 20px auto;

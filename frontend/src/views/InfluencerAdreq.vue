@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Navigation Bar -->
+    
     <header>
       <div class="navbar-brand">Influencer @ SPOC</div>
       <div class="user-actions">
@@ -11,7 +11,6 @@
       </div>
     </header>
     
-    <!-- Ad Management Section -->
     <div class="ad-management">
       <h2>Ad Management for {{ influencerName }}</h2>
       <div v-for="section in sections" :key="section.title">
@@ -56,7 +55,7 @@ export default {
   props: ['influencerId'],
   data() {
     return {
-      influencerName: "inf", // Replace this with the actual influencer's name if available
+      influencerName: "inf", 
       adRequests: [],
     };
   },
@@ -79,7 +78,7 @@ export default {
       const token = localStorage.getItem('authToken');
       if (!token) {
         console.error("Authentication token not found. Please log in.");
-        this.$router.push('/'); // Redirect to login if token is missing
+        this.$router.push('/'); 
         return;
       }
       axios.get(`http://127.0.0.1:5000/influencer/ad_requests/${this.influencerId}`, {
@@ -125,7 +124,7 @@ export default {
       });
     },
     negotiateAdRequest(adRequest) {
-      // Redirect to the negotiate page with adRequestId
+      
       this.$router.push({ 
         name: 'InfluencerNegotiateAdRequest', 
         params: { adRequestId: adRequest.id } 
@@ -143,7 +142,7 @@ export default {
 </script>
 
 <style scoped>
-/* Navbar Styles */
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
 * {
@@ -202,7 +201,7 @@ header {
   cursor: pointer;
 }
 
-/* Ad Management Styles */
+
 .ad-management {
   width: 80%;
   margin: 0 auto;

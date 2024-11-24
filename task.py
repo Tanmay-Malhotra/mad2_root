@@ -16,30 +16,27 @@ logger = get_task_logger(__name__)
 @shared_task(bind=True)
 def monthly_reminder(self):
     try:
-        # Fetch the admin role
+        
         admin_role = Role.query.filter_by(name='admin').first()
         if not admin_role:
             logger.warning("No admin role found.")
             return "No admin role found."
 
-        # Fetch the admin user
         admin = User.query.filter(User.roles.contains(admin_role)).first()
         if not admin:
             logger.warning("No admin user found.")
             return "No admin user found."
 
-        # Load email template
         template_path = os.path.join(os.path.dirname(__file__), 'template.html')
         with open(template_path, 'r') as file:
             template = Template(file.read())
 
-        # Gather statistics for the report
+        
         total_users = User.query.count()
         total_influencers = User.query.filter_by(user_type='influencer').count()
         total_sponsors = User.query.filter_by(user_type='sponsor').count()
         total_ad_requests = AdRequest.query.count()
 
-        # Send the email
         send_email(
             "malhotratanmay04@gmail.com",
             "Monthly Report",
@@ -60,7 +57,6 @@ def monthly_reminder(self):
 @shared_task(bind=True)
 def daily_reminder(self):
     try:
-        # Fetch all influencers
         influencers = User.query.filter(User.user_type == 'influencer').all()
 
         if not influencers:
@@ -68,13 +64,13 @@ def daily_reminder(self):
             return "No influencers found in the database."
 
         for influencer in influencers:
-            # Check if this influencer has pending ad requests
+
             pending_ad_requests = AdRequest.query.filter_by(
                 influencer_profile_id=influencer.influencer_profile.id,
                 status='Request Sent'
             ).all()
 
-            # Message based on pending requests
+
             if pending_ad_requests:
                 message = (
                     f"Hello {influencer.influencer_profile.name}, "
@@ -88,7 +84,6 @@ def daily_reminder(self):
                     "Check out public ad requests for new opportunities!"
                 )
 
-            # Send the notification
             send_notification(message)
             logger.info(f"Notification sent to influencer")
 
@@ -100,7 +95,7 @@ def daily_reminder(self):
 # ------------------------- Send Notification -------------------------
 def send_notification(message):
     try:
-        #this is the google chat webhook url
+
         url = "https://chat.googleapis.com/v1/spaces/AAAA3x4WEOQ/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=xVyXbbh2sn--sHugovpCi8TVpIPcMMP7hB6jp4be_Cw"
         app_message = {"text": message}
         message_headers = {"Content-Type": "application/json; charset=UTF-8"}
@@ -117,14 +112,3 @@ def send_notification(message):
         return f"Error in send_notification task: {e}"
 
 
-""" (proj) tan@DESKTOP-N1K8ALE:~/root_mad2$ redis-cli
-127.0.0.1:6379> ping
-PONG
-127.0.0.1:6379> 
-(proj) tan@DESKTOP-N1K8ALE:~/root_mad2$ sudo systemctl stop redis
-(proj) tan@DESKTOP-N1K8ALE:~/root_mad2$ sudo ss -tulnp | grep 6379
-tcp   LISTEN 0      511           0.0.0.0:6379       0.0.0.0:*    users:(("redis-server",pid=9436,fd=6))   
-tcp   LISTEN 0      511              [::]:6379          [::]:*    users:(("redis-server",pid=9436,fd=7))   
-(proj) tan@DESKTOP-N1K8ALE:~/root_mad2$ sudo kill -9 9436
-(proj) tan@DESKTOP-N1K8ALE:~/root_mad2$ sudo ss -tulnp | grep 6379
-(proj) tan@DESKTOP-N1K8ALE:~/root_mad2$ redis-server """

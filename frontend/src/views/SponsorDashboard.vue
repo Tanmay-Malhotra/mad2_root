@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Navigation Bar -->
+    
     <header>
       <div class="navbar-brand">Sponsor @ SPOC</div>
       <div class="user-actions">
@@ -11,7 +11,6 @@
       </div>
     </header>
     
-    <!-- Content Section -->
     <div class="content">
       <h1>Welcome, sponsor</h1>
       <p>Great Companies are powered by great Campaigns on SPOC!</p>
@@ -95,7 +94,7 @@ header {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 80px); /* Adjusts for header height */
+  height: calc(100vh - 80px); 
   text-align: center;
 }
 

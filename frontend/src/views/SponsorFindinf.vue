@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Navigation Bar -->
     <header>
       <div class="navbar-brand">Sponsor @ SPOC</div>
       <div class="user-actions">
@@ -11,7 +10,6 @@
       </div>
     </header>
     
-    <!-- Content Section -->
     <div class="find-influencers content">
       <h1>Find Influencers</h1>
       <div class="search-bar">
@@ -82,7 +80,7 @@ export default {
         });
     },
     sendAdRequest(influencerId, influencerName) {
-      // Navigate to the Send Ad Request page with influencerId and influencerName as query
+      
       this.$router.push({
         name: 'SponsorSendAdreq',
         params: { influencerId },

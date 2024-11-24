@@ -2,22 +2,19 @@
   <div class="negotiate-ad-request">
     <h1>Negotiate Ad Request for Campaign: {{ campaignName }}</h1>
     <form @submit.prevent="submitNegotiation">
-      <!-- Requirements Textarea -->
+
       <div class="form-group">
         <label for="requirements">Requirements:</label>
         <textarea v-model="requirements" rows="3"></textarea>
       </div>
 
-      <!-- Payment Amount Input -->
       <div class="form-group">
         <label for="payment_amount">Payment Amount:</label>
         <input type="number" v-model="paymentAmount" />
       </div>
 
-      <!-- Submit Button -->
       <button type="submit" class="button submit-button">Send Negotiated Request</button>
 
-      <!-- Success and Error Messages -->
       <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
     </form>
@@ -39,7 +36,7 @@ export default {
     };
   },
   methods: {
-    // Submit the negotiation request
+ 
     submitNegotiation() {
       const token = localStorage.getItem('authToken');
       const updatedData = {

@@ -1,25 +1,24 @@
 <template>
   <div class="edit-ad-request">
-    <!-- Header with Edit Title and Go Back Button -->
+
     <div class="header">
       <h1>Edit Ad Request</h1>
       <button @click="goBack" class="button go-back-button">Go Back</button>
     </div>
     
     <form @submit.prevent="updateAdRequest">
-      <!-- Requirements Textarea -->
+
       <div class="form-group">
         <label for="requirements">Requirements:</label>
         <textarea v-model="requirements" rows="4"></textarea>
       </div>
 
-      <!-- Payment Amount Input -->
+    
       <div class="form-group">
         <label for="payment_amount">Payment Amount:</label>
         <input type="number" v-model="payment_amount" />
       </div>
 
-      <!-- Submit Button -->
       <button type="submit" class="button update-request-button">Update Ad Request</button>
 
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
@@ -43,7 +42,7 @@ export default {
     };
   },
   methods: {
-    // Update the ad request
+
     updateAdRequest() {
       const token = localStorage.getItem('authToken');
       const updatedFields = {
@@ -67,7 +66,7 @@ export default {
           this.successMessage = '';
         });
     },
-    // Navigate back to the ad requests page
+
     goBack() {
       this.$router.push({ name: 'ViewAdRequests', params: { campaignId: this.campaignId } });
     }

@@ -1,14 +1,14 @@
 <template>
   <div class="ad-requests" v-if="campaignId">
-    <!-- Header with Go Back Button and Title -->
+
     <div class="header">
-      <h1>Ad Requests for Campaign: {{ campaignName }}</h1>
+      <h1>Ad Requests for Campaign: </h1>
       <button @click="goBack" class="button go-back-button">Go Back</button>
     </div>
 
-    <!-- Display ad request sections if there are any requests, else show the no ad requests message -->
+
     <div v-if="adRequests.length > 0">
-      <!-- Ad request sections for different statuses -->
+
       <div class="request-section" v-for="section in sections" :key="section.status">
         <h2>{{ section.title }}</h2>
         <table v-if="section.requests.length">
@@ -27,17 +27,17 @@
               <td>{{ adRequest.requirements }}</td>
               <td>${{ adRequest.payment_amount }}</td>
               <td>{{ adRequest.status }}</td>
-              <!-- Actions for Pending Requests -->
+            
               <td v-if="section.status === 'Request Sent'">
                 <button @click="redirectToEdit(adRequest.id)" class="button edit-button">Edit</button>
                 <button @click="deleteAdRequest(adRequest.id)" class="button delete-button">Delete</button>
               </td>
-              <!-- Actions for Negotiated Requests -->
+     
               <td v-else-if="section.status === 'Request Negotiated'">
                 <button @click="acceptAdRequest(adRequest.id)" class="button accept-button">Accept</button>
                 <button @click="rejectAdRequest(adRequest.id)" class="button reject-button">Reject</button>
               </td>
-              <!-- Actions for Requests Sent by Influencer -->
+              
               <td v-else-if="section.status === 'Request Sent by Influencer'">
                 <button @click="acceptInfluencerAdRequest(adRequest.id)" class="button accept-button">Accept</button>
                 <button @click="rejectInfluencerAdRequest(adRequest.id)" class="button reject-button">Reject</button>
@@ -49,10 +49,10 @@
       </div>
     </div>
 
-    <!-- No ad requests message -->
-    <p v-if="adRequests.length === 0">No ad requests available for this campaign.</p>
 
-    <!-- Error and Success Messages -->
+    
+
+
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
     <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
   </div>
@@ -72,7 +72,7 @@ export default {
     };
   },
   computed: {
-    // Categorize ad requests based on status
+
     sections() {
       return [
         { title: 'Requests Sent by Influencer', status: 'Request Sent by Influencer', requests: this.adRequests.filter(req => req.status === 'Request Sent by Influencer') },
@@ -84,7 +84,7 @@ export default {
     }
   },
   created() {
-    // Redirect if campaignId is missing
+
     if (!this.campaignId) {
       this.goBack();
     } else {
@@ -122,12 +122,11 @@ export default {
           headers: { 'Authentication-Token': token }
         })
         .then(() => {
-          // Filter out the deleted request
+
           this.adRequests = this.adRequests.filter(adRequest => adRequest.id !== adRequestId);
           this.successMessage = "Ad request deleted successfully!";
           this.errorMessage = '';
 
-          // If no ad requests left, show the no ad requests message
           if (this.adRequests.length === 0) {
             this.successMessage = "No ad requests available for this campaign.";
           }
@@ -138,7 +137,7 @@ export default {
           this.successMessage = '';
         });
     },
-    // Accept negotiated ad request
+
     acceptAdRequest(adRequestId) {
       const token = localStorage.getItem('authToken');
       const url = `http://127.0.0.1:5000/accept_negotiated_ad_request/${adRequestId}`;
@@ -149,7 +148,7 @@ export default {
         .then(response => {
           this.successMessage = response.data.message || "Ad request accepted successfully!";
           this.errorMessage = '';
-          this.fetchAdRequests(); // Refresh the requests to update status
+          this.fetchAdRequests(); 
         })
         .catch(error => {
           console.error("Error accepting ad request:", error);
@@ -157,7 +156,7 @@ export default {
           this.successMessage = '';
         });
     },
-    // Reject negotiated ad request
+    
     rejectAdRequest(adRequestId) {
       const token = localStorage.getItem('authToken');
       const url = `http://127.0.0.1:5000/reject_negotiated_ad_request/${adRequestId}`;
@@ -168,7 +167,7 @@ export default {
         .then(response => {
           this.successMessage = response.data.message || "Ad request rejected successfully!";
           this.errorMessage = '';
-          this.fetchAdRequests(); // Refresh the requests to update status
+          this.fetchAdRequests(); 
         })
         .catch(error => {
           console.error("Error rejecting ad request:", error);
@@ -176,7 +175,7 @@ export default {
           this.successMessage = '';
         });
     },
-    // Accept ad request sent by influencer
+
     acceptInfluencerAdRequest(adRequestId) {
       const token = localStorage.getItem('authToken');
       const url = `http://127.0.0.1:5000/accept_influencer_ad_request/${adRequestId}`;
@@ -187,7 +186,7 @@ export default {
         .then(response => {
           this.successMessage = response.data.message || "Ad request accepted successfully!";
           this.errorMessage = '';
-          this.fetchAdRequests(); // Refresh the requests to update status
+          this.fetchAdRequests(); 
         })
         .catch(error => {
           console.error("Error accepting influencer ad request:", error);
@@ -195,7 +194,7 @@ export default {
           this.successMessage = '';
         });
     },
-    // Reject ad request sent by influencer
+    
     rejectInfluencerAdRequest(adRequestId) {
       const token = localStorage.getItem('authToken');
       const url = `http://127.0.0.1:5000/reject_influencer_ad_request/${adRequestId}`;
@@ -206,7 +205,7 @@ export default {
         .then(response => {
           this.successMessage = response.data.message || "Ad request rejected successfully!";
           this.errorMessage = '';
-          this.fetchAdRequests(); // Refresh the requests to update status
+          this.fetchAdRequests(); 
         })
         .catch(error => {
           console.error("Error rejecting influencer ad request:", error);
@@ -214,7 +213,7 @@ export default {
           this.successMessage = '';
         });
     },
-    // Determine if the section should display action buttons
+    
     sectionHasActions(status) {
       return status === 'Request Sent' || status === 'Request Negotiated' || status === 'Request Sent by Influencer';
     }

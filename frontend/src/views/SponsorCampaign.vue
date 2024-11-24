@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Navigation Bar -->
     <header>
       <div class="navbar-brand">Sponsor @ SPOC</div>
       <div class="user-actions">
@@ -11,7 +10,6 @@
       </div>
     </header>
 
-    <!-- Content Section -->
     <div class="content">
       <div class="header">
         <h1>Your Campaigns</h1>

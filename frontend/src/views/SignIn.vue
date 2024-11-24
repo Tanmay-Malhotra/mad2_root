@@ -51,23 +51,19 @@ export default {
           if (response.status === 200) {
             const token = response.data.authToken;
             const role = response.data.role;
-            const sponsorId = response.data.sponsorId; // Capture sponsorId if available
-            const influencerId = response.data.influencerId; // Capture influencerId if available
+            const sponsorId = response.data.sponsorId; 
+            const influencerId = response.data.influencerId; 
 
-            // Store authToken in localStorage
             localStorage.setItem('authToken', token);
 
-            // Store sponsorId if the user is a sponsor
             if (role === 'sponsor' && sponsorId) {
               localStorage.setItem('sponsorId', sponsorId);
             }
 
-            // Store influencerId if the user is an influencer
             if (role === 'influencer' && influencerId) {
               localStorage.setItem('influencerId', influencerId);
             }
 
-            // Redirect based on the role
             if (role === 'admin') {
               this.$router.push('/admin-dashboard');
             } else if (role === 'sponsor') {
